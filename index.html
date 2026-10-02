@@ -513,57 +513,124 @@
 
     .booking-shell {
       display: grid;
-      grid-template-columns: .78fr 1fr;
+      grid-template-columns: minmax(280px, .72fr) minmax(0, 1.5fr);
       gap: 18px;
-      align-items: stretch;
+      align-items: start;
     }
 
     .booking-intro {
+      position: sticky;
+      top: 108px;
+      min-height: 680px;
       padding: clamp(30px, 5vw, 54px);
       border: 1px solid rgba(217,189,122,.25);
       border-radius: 42px;
       background:
-        linear-gradient(180deg, rgba(217,189,122,.12), transparent 52%),
+        linear-gradient(180deg, rgba(217,189,122,.14), transparent 48%),
+        linear-gradient(0deg, rgba(8,11,10,.22), rgba(8,11,10,.22)),
         #0b100d;
       box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .booking-intro::after {
+      content: "";
+      position: absolute;
+      inset: auto -18% -22% 22%;
+      height: 260px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(217,189,122,.18), transparent 68%);
+      pointer-events: none;
     }
 
     .booking-intro h2 {
+      position: relative;
+      z-index: 1;
       margin: 18px 0 18px;
       font-size: clamp(2.6rem, 5.7vw, 6rem);
       line-height: .88;
       letter-spacing: -.065em;
     }
 
-    .booking-intro p { color: rgba(255,250,240,.68); line-height: 1.68; }
+    .booking-intro p { position: relative; z-index: 1; color: rgba(255,250,240,.68); line-height: 1.68; }
 
     .booking-photo {
+      position: relative;
+      z-index: 1;
       margin-top: 28px;
       overflow: hidden;
       border-radius: 28px;
       border: 1px solid rgba(255,250,240,.12);
+      box-shadow: 0 26px 70px rgba(0,0,0,.34);
     }
 
     .booking-photo img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 
-    .booking-form {
-      padding: clamp(24px, 4vw, 42px);
+    .concierge-configurator {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, .76fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .booking-form,
+    .proposal-summary {
       border: 1px solid rgba(217,189,122,.22);
       border-radius: 42px;
-      color: var(--ink);
-      background: var(--ivory);
       box-shadow: 0 30px 90px rgba(0,0,0,.22);
+    }
+
+    .booking-form {
+      position: relative;
+      min-height: 680px;
+      padding: clamp(22px, 3.4vw, 40px);
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(255,250,240,.96), rgba(241,232,211,.92)),
+        var(--ivory);
+      overflow: hidden;
+    }
+
+    .booking-form::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(217,189,122,.18), transparent 26rem),
+        linear-gradient(rgba(17,24,19,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17,24,19,.035) 1px, transparent 1px);
+      background-size: auto, 46px 46px, 46px 46px;
+      pointer-events: none;
+    }
+
+    .booking-form > * { position: relative; z-index: 1; }
+
+    .concierge-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 22px;
+      color: #687164;
+      font-size: .72rem;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .concierge-topline span:first-child {
+      color: var(--gold);
     }
 
     .steps {
       display: flex;
       gap: 8px;
-      margin-bottom: 26px;
+      margin-bottom: 28px;
     }
 
     .step-dot {
       flex: 1;
-      height: 4px;
+      height: 5px;
       border-radius: 999px;
       background: rgba(17,24,19,.12);
       overflow: hidden;
@@ -573,18 +640,28 @@
       display: block;
       width: 0;
       height: 100%;
-      background: var(--gold);
-      transition: width .3s var(--ease);
+      background: linear-gradient(90deg, var(--gold), var(--champagne));
+      transition: width .46s var(--ease);
     }
 
     .step-dot.active span { width: 100%; }
 
-    .step { display: none; animation: fadeUp .38s var(--ease) both; }
+    .step-stage {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+    }
+
+    .step {
+      display: none;
+      animation: wizardIn .46s var(--ease) both;
+    }
+
     .step.active { display: block; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes wizardIn {
+      from { opacity: 0; filter: blur(8px); transform: translateY(18px) scale(.985); }
+      to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
     }
 
     .step h3 {
@@ -603,16 +680,17 @@
       display: flex;
       gap: 12px;
       align-items: flex-start;
-      min-height: 92px;
+      min-height: 104px;
       padding: 16px;
       border: 1px solid rgba(17,24,19,.12);
-      border-radius: 20px;
+      border-radius: 22px;
       cursor: pointer;
       background: rgba(245,240,230,.72);
-      transition: border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease);
+      transition: border-color .25s var(--ease), background .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
     }
 
     .choice:hover { transform: translateY(-2px); border-color: rgba(184,141,61,.5); background: #fff; }
+    .choice:has(input:checked) { border-color: rgba(184,141,61,.82); background: #fffaf0; box-shadow: 0 18px 48px rgba(184,141,61,.14); }
     .choice input { margin-top: 4px; accent-color: var(--gold); }
     .choice b { display: block; margin-bottom: 4px; font-size: .95rem; }
     .choice span { color: #6b756a; font-size: .88rem; line-height: 1.35; }
@@ -623,14 +701,34 @@
     .field input, .field select, .field textarea {
       width: 100%;
       border: 1px solid rgba(17,24,19,.14);
-      border-radius: 16px;
-      padding: 14px 14px;
+      border-radius: 18px;
+      padding: 15px 15px;
       color: var(--ink);
-      background: rgba(245,240,230,.8);
+      background: rgba(245,240,230,.82);
       outline: 0;
+      transition: border-color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease);
     }
-    .field textarea { min-height: 104px; resize: vertical; }
-    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); background: #fff; }
+    .field textarea { min-height: 138px; resize: vertical; line-height: 1.55; }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 0 0 5px rgba(184,141,61,.1);
+      transform: translateY(-1px);
+    }
+
+    .concierge-field {
+      padding: 16px;
+      border: 1px solid rgba(184,141,61,.18);
+      border-radius: 26px;
+      background: rgba(255,250,240,.68);
+    }
+
+    .concierge-field .field-note {
+      margin: -2px 0 12px;
+      color: #77705f;
+      font-size: .92rem;
+      line-height: 1.45;
+    }
 
     .booking-nav {
       display: flex;
@@ -642,8 +740,9 @@
     }
 
     .mini-button {
-      min-height: 46px;
-      padding: 0 18px;
+      position: relative;
+      min-height: 48px;
+      padding: 0 20px;
       border: 1px solid rgba(17,24,19,.14);
       border-radius: 999px;
       cursor: pointer;
@@ -654,11 +753,27 @@
       letter-spacing: .12em;
       text-transform: uppercase;
       transition: .25s var(--ease);
+      overflow: hidden;
     }
 
-    .mini-button.primary { border-color: var(--gold); background: var(--ink); color: var(--ivory); }
+    .mini-button.primary { min-width: 190px; border-color: var(--gold); background: var(--ink); color: var(--ivory); }
+    .mini-button.primary.loading { color: transparent; pointer-events: none; }
+    .mini-button.primary.loading::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      margin: -9px 0 0 -9px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,250,240,.35);
+      border-top-color: var(--champagne);
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .mini-button:hover { transform: translateY(-1px); }
-    .mini-button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .mini-button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 
     .form-note {
       min-height: 24px;
@@ -666,6 +781,144 @@
       color: var(--gold);
       font-size: .9rem;
       font-weight: 800;
+      transition: opacity .25s var(--ease);
+    }
+
+    .success-state {
+      display: none;
+      margin-top: 20px;
+      padding: 18px;
+      border: 1px solid rgba(184,141,61,.28);
+      border-radius: 24px;
+      color: var(--ink);
+      background: linear-gradient(135deg, rgba(217,189,122,.16), rgba(255,250,240,.92));
+      animation: wizardIn .55s var(--ease) both;
+    }
+
+    .success-state.active { display: block; }
+    .success-state b { display: block; margin-bottom: 6px; font-family: var(--serif); font-size: 1.5rem; font-weight: 500; }
+    .success-state span { color: #60695f; line-height: 1.5; }
+
+    .proposal-summary {
+      position: sticky;
+      top: 108px;
+      min-height: 680px;
+      padding: 24px;
+      color: var(--ivory);
+      background:
+        linear-gradient(180deg, rgba(217,189,122,.14), transparent 38%),
+        radial-gradient(circle at 80% 0%, rgba(217,189,122,.2), transparent 18rem),
+        #090d0b;
+      overflow: hidden;
+    }
+
+    .proposal-summary::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(217,189,122,.18);
+      border-radius: 32px;
+      pointer-events: none;
+    }
+
+    .proposal-summary > * { position: relative; z-index: 1; }
+
+    .passport-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 22px;
+      color: rgba(255,250,240,.58);
+      font-size: .68rem;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .passport-seal {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(217,189,122,.35);
+      border-radius: 999px;
+      color: var(--champagne);
+      font-family: var(--serif);
+      font-size: 1rem;
+      letter-spacing: .08em;
+    }
+
+    .proposal-summary h3 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 3vw, 3.25rem);
+      line-height: .92;
+      letter-spacing: -.055em;
+    }
+
+    .proposal-summary p { margin: 0; color: rgba(255,250,240,.68); line-height: 1.55; }
+
+    .proposal-image {
+      margin: 22px 0;
+      overflow: hidden;
+      border: 1px solid rgba(255,250,240,.12);
+      border-radius: 24px;
+      background: #101612;
+    }
+
+    .proposal-image img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; transition: opacity .28s var(--ease), transform .8s var(--ease); }
+    .proposal-image img.updating { opacity: .25; transform: scale(1.04); }
+
+    .summary-list { display: grid; gap: 9px; margin: 18px 0; }
+
+    .summary-item {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,250,240,.09);
+    }
+
+    .summary-item span:first-child { color: rgba(217,189,122,.78); font-size: .72rem; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+    .summary-item span:last-child { color: rgba(255,250,240,.82); }
+
+    .proposal-signals {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .proposal-signal {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      color: rgba(255,250,240,.72);
+      font-size: .9rem;
+      line-height: 1.4;
+      animation: fadeUp .34s var(--ease) both;
+    }
+
+    .proposal-signal::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      margin-top: .45em;
+      border-radius: 999px;
+      background: var(--champagne);
+      box-shadow: 0 0 0 6px rgba(217,189,122,.12);
+    }
+
+    .proposal-status {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid rgba(217,189,122,.18);
+      border-radius: 20px;
+      color: var(--champagne);
+      background: rgba(255,250,240,.06);
+      font-size: .86rem;
+      font-weight: 850;
+      line-height: 1.45;
     }
 
     .atelier {
@@ -746,7 +999,8 @@
 
     @media (max-width: 980px) {
       .nav-links { display: none; }
-      .hero-content, .section-head, .story-grid, .booking-shell, .atelier, .footer-inner { grid-template-columns: 1fr; }
+      .hero-content, .section-head, .story-grid, .booking-shell, .concierge-configurator, .atelier, .footer-inner { grid-template-columns: 1fr; }
+      .booking-intro, .proposal-summary { position: relative; top: auto; min-height: auto; }
       .hero-card { max-width: 560px; }
       .destination-board { grid-template-columns: 1fr; }
       .dest-card.large, .dest-card.medium, .dest-card.small, .dest-card.wide { grid-column: auto; min-height: 430px; }
@@ -884,63 +1138,84 @@
           <div class="booking-photo"><img src="images/10-linas-contact.jpg" alt="Linas contact and trust image" /></div>
         </aside>
 
-        <form class="booking-form reveal" id="requestForm">
-          <div class="steps" aria-label="Request steps">
-            <div class="step-dot active"><span></span></div>
-            <div class="step-dot"><span></span></div>
-            <div class="step-dot"><span></span></div>
-            <div class="step-dot"><span></span></div>
-          </div>
-
-          <div class="step active" data-step="0">
-            <h3 data-i18n="step1Title">What kind of day should it be?</h3>
-            <p data-i18n="step1Lead">Choose the mood first. The route can be designed around that.</p>
-            <div class="choice-grid">
-              <label class="choice"><input type="radio" name="mood" value="Scenic road" checked><span><b data-i18n="mood1">Scenic road</b><span data-i18n="mood1Text">Views, distance, rhythm and quiet roads.</span></span></label>
-              <label class="choice"><input type="radio" name="mood" value="Water and coast"><span><b data-i18n="mood2">Water and coast</b><span data-i18n="mood2Text">Lake, ferry, swim, harbour or coastline.</span></span></label>
-              <label class="choice"><input type="radio" name="mood" value="City escape"><span><b data-i18n="mood3">City escape</b><span data-i18n="mood3Text">Start central, finish somewhere memorable.</span></span></label>
-              <label class="choice"><input type="radio" name="mood" value="Local culture"><span><b data-i18n="mood4">Local culture</b><span data-i18n="mood4Text">Food, market, local host or small hidden stop.</span></span></label>
+        <div class="concierge-configurator reveal" aria-label="The Concierge Configurator">
+          <form class="booking-form" id="requestForm">
+            <div class="concierge-topline"><span id="stepLabel">Step 1 / 4</span><span>The Concierge Configurator</span></div>
+            <div class="steps" aria-label="Request steps">
+              <div class="step-dot active"><span></span></div>
+              <div class="step-dot"><span></span></div>
+              <div class="step-dot"><span></span></div>
+              <div class="step-dot"><span></span></div>
             </div>
-          </div>
 
-          <div class="step" data-step="1">
-            <h3 data-i18n="step2Title">How private should it feel?</h3>
-            <p data-i18n="step2Lead">Premium positioning starts with group size and rhythm.</p>
-            <div class="field-row">
-              <div class="field"><label for="guests" data-i18n="guestsLabel">Guests</label><select id="guests" name="guests"><option>1</option><option selected>2</option><option>3–4</option><option>5–8</option></select></div>
-              <div class="field"><label for="pace" data-i18n="paceLabel">Pace</label><select id="pace" name="pace"><option data-i18n="pace1">Relaxed</option><option selected data-i18n="pace2">Balanced</option><option data-i18n="pace3">Ambitious</option></select></div>
-            </div>
-            <div class="choice-grid">
-              <label class="choice"><input type="radio" name="guide" value="Fully guided" checked><span><b data-i18n="guide1">Fully guided</b><span data-i18n="guide1Text">LINAS or partner guides the whole experience.</span></span></label>
-              <label class="choice"><input type="radio" name="guide" value="Partly guided"><span><b data-i18n="guide2">Partly guided</b><span data-i18n="guide2Text">Guided start, hosted stops, independent sections.</span></span></label>
-            </div>
-          </div>
+            <div class="step-stage">
+              <div class="step active" data-step="0">
+                <h3 data-i18n="step1Title">What kind of day should it be?</h3>
+                <p data-i18n="step1Lead">Choose the mood first. The route can be designed around that.</p>
+                <div class="choice-grid">
+                  <label class="choice"><input type="radio" name="mood" value="Scenic road" checked><span><b data-i18n="mood1">Scenic road</b><span data-i18n="mood1Text">Views, distance, rhythm and quiet roads.</span></span></label>
+                  <label class="choice"><input type="radio" name="mood" value="Water and coast"><span><b data-i18n="mood2">Water and coast</b><span data-i18n="mood2Text">Lake, ferry, swim, harbour or coastline.</span></span></label>
+                  <label class="choice"><input type="radio" name="mood" value="City escape"><span><b data-i18n="mood3">City escape</b><span data-i18n="mood3Text">Start central, finish somewhere memorable.</span></span></label>
+                  <label class="choice"><input type="radio" name="mood" value="Local culture"><span><b data-i18n="mood4">Local culture</b><span data-i18n="mood4Text">Food, market, local host or small hidden stop.</span></span></label>
+                </div>
+              </div>
 
-          <div class="step" data-step="2">
-            <h3 data-i18n="step3Title">Timing and route notes</h3>
-            <p data-i18n="step3Lead">Keep it light. This should feel like a concierge request, not paperwork.</p>
-            <div class="field-row">
-              <div class="field"><label for="season" data-i18n="seasonLabel">Preferred season</label><input id="season" name="season" placeholder="May / summer / flexible" /></div>
-              <div class="field"><label for="region" data-i18n="regionLabel">Region idea</label><input id="region" name="region" placeholder="Europe / Baltics / Alps / coast" /></div>
-            </div>
-            <div class="field"><label for="notes" data-i18n="notesLabel">Taste notes</label><textarea id="notes" name="notes" placeholder="Views, food, water, history, quiet roads, photography..."></textarea></div>
-          </div>
+              <div class="step" data-step="1">
+                <h3 data-i18n="step2Title">How private should it feel?</h3>
+                <p data-i18n="step2Lead">Premium positioning starts with group size and rhythm.</p>
+                <div class="field-row">
+                  <div class="field"><label for="guests" data-i18n="guestsLabel">Guests</label><select id="guests" name="guests"><option value="1">1</option><option value="2" selected>2</option><option value="3–4">3–4</option><option value="5–8">5–8</option></select></div>
+                  <div class="field"><label for="pace" data-i18n="paceLabel">Pace</label><select id="pace" name="pace"><option value="Relaxed" data-i18n="pace1">Relaxed</option><option value="Balanced" selected data-i18n="pace2">Balanced</option><option value="Ambitious" data-i18n="pace3">Ambitious</option></select></div>
+                </div>
+                <div class="choice-grid">
+                  <label class="choice"><input type="radio" name="guide" value="Fully guided" checked><span><b data-i18n="guide1">Fully guided</b><span data-i18n="guide1Text">LINAS or partner guides the whole experience.</span></span></label>
+                  <label class="choice"><input type="radio" name="guide" value="Partly guided"><span><b data-i18n="guide2">Partly guided</b><span data-i18n="guide2Text">Guided start, hosted stops, independent sections.</span></span></label>
+                </div>
+              </div>
 
-          <div class="step" data-step="3">
-            <h3 data-i18n="step4Title">Request a LINAS proposal</h3>
-            <p data-i18n="step4Lead">Contact details are intentionally left open until LINAS decides the final channel. This button currently confirms the front-end flow only.</p>
-            <div class="field-row">
-              <div class="field"><label for="name" data-i18n="nameLabel">Name</label><input id="name" name="name" placeholder="Guest name" /></div>
-              <div class="field"><label for="contact" data-i18n="contactLabel">Contact</label><input id="contact" name="contact" placeholder="Email / WhatsApp later" /></div>
-            </div>
-          </div>
+              <div class="step" data-step="2">
+                <h3 data-i18n="step3Title">Timing and route notes</h3>
+                <p data-i18n="step3Lead">Keep it light. This should feel like a concierge request, not paperwork.</p>
+                <div class="field-row">
+                  <div class="field"><label for="season" data-i18n="seasonLabel">Preferred season</label><input id="season" name="season" placeholder="May / summer / flexible" /></div>
+                  <div class="field concierge-field"><label for="region" data-i18n="regionLabel">Region idea</label><p class="field-note" id="regionNote">Write it as a note to Linas: where should the feeling of the route begin?</p><input id="region" name="region" placeholder="Linas, I imagine the Alps, a coast road, or somewhere quieter..." /></div>
+                </div>
+                <div class="field concierge-field"><label for="notes" data-i18n="notesLabel">Taste notes</label><p class="field-note" id="tasteNote">Tell the concierge what would make the day feel personally designed.</p><textarea id="notes" name="notes" placeholder="I care about morning light, quiet asphalt, one exceptional view, and a place to stop for local food..."></textarea></div>
+              </div>
 
-          <div class="booking-nav">
-            <button class="mini-button" type="button" id="prevBtn" data-i18n="prevBtn">Back</button>
-            <button class="mini-button primary" type="button" id="nextBtn" data-i18n="nextBtn">Continue</button>
-          </div>
-          <div class="form-note" id="formNote" aria-live="polite"></div>
-        </form>
+              <div class="step" data-step="3">
+                <h3 data-i18n="step4Title">Request a LINAS proposal</h3>
+                <p data-i18n="step4Lead">Contact details are intentionally left open until LINAS decides the final channel. This button currently confirms the front-end flow only.</p>
+                <div class="field-row">
+                  <div class="field"><label for="name" data-i18n="nameLabel">Name</label><input id="name" name="name" placeholder="Guest name" /></div>
+                  <div class="field"><label for="contact" data-i18n="contactLabel">Contact</label><input id="contact" name="contact" placeholder="Email / WhatsApp later" /></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="booking-nav">
+              <button class="mini-button" type="button" id="prevBtn" data-i18n="prevBtn">Back</button>
+              <button class="mini-button primary" type="button" id="nextBtn" data-i18n="nextBtn">Continue</button>
+            </div>
+            <div class="form-note" id="formNote" aria-live="polite"></div>
+            <div class="success-state" id="successState" aria-live="polite"><b id="successTitle">Your private route dossier is queued.</b><span id="successText">LINAS contact details will be connected when the final channel is chosen.</span></div>
+          </form>
+
+          <aside class="proposal-summary" id="proposalSummary" aria-label="Live proposal summary">
+            <div class="passport-top"><span id="summaryEyebrow">Live proposal summary</span><span class="passport-seal">L</span></div>
+            <h3 id="proposalTitle">A private road chapter is taking shape.</h3>
+            <p id="proposalNarrative">Tailoring for asphalt rhythm, quiet scenery and the right level of guidance.</p>
+            <div class="proposal-image"><img id="proposalImage" src="images/08-open-road.jpg" alt="Current proposal mood image" /></div>
+            <div class="summary-list">
+              <div class="summary-item"><span id="labelMood">Mood</span><span id="proposalMood">Scenic road</span></div>
+              <div class="summary-item"><span id="labelGuide">Guide</span><span id="proposalGuide">Fully guided</span></div>
+              <div class="summary-item"><span id="labelGroup">Group</span><span id="proposalGroup">2 · Balanced pace</span></div>
+              <div class="summary-item"><span id="labelRegion">Region</span><span id="proposalRegion">Open Europe brief</span></div>
+            </div>
+            <div class="proposal-signals" id="proposalSignals"></div>
+            <div class="proposal-status" id="proposalStatus">Route intelligence idle. Select a mood to begin curation.</div>
+          </aside>
+        </div>
       </div>
     </section>
 
@@ -982,12 +1257,204 @@
       }
     };
 
-    const state = { lang: 'en', step: 0 };
+    const state = { lang: 'en', step: 0, submitting: false };
+    const form = document.getElementById('requestForm');
     const stepEls = Array.from(document.querySelectorAll('.step'));
     const dotEls = Array.from(document.querySelectorAll('.step-dot'));
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
     const note = document.getElementById('formNote');
+    const successState = document.getElementById('successState');
+    const stepLabel = document.getElementById('stepLabel');
+    const proposalImage = document.getElementById('proposalImage');
+
+    const conciergeCopy = {
+      en: {
+        step: 'Step', configurator: 'The Concierge Configurator', done: 'Request proposal', complete: 'Dossier queued',
+        summaryEyebrow: 'Live proposal summary', title: 'A private road chapter is taking shape.',
+        labels: { mood: 'Mood', guide: 'Guide', group: 'Group', region: 'Region' },
+        regionFallback: 'Open Europe brief', seasonFallback: 'Season flexible',
+        regionNote: 'Write it as a note to Linas: where should the feeling of the route begin?',
+        tasteNote: 'Tell the concierge what would make the day feel personally designed.',
+        regionPlaceholder: 'Linas, I imagine the Alps, a coast road, or somewhere quieter...',
+        notesPlaceholder: 'I care about morning light, quiet asphalt, one exceptional view, and a place to stop for local food...',
+        loading: ['Analyzing route intelligence...', 'Generating your bespoke dossier...', 'Matching mood, pace and guidance...'],
+        successTitle: 'Your private route dossier is queued.',
+        successText: 'This prototype now behaves like a concierge flow. Final delivery can later connect to email, WhatsApp or a booking backend.',
+        idleStatus: 'Route intelligence idle. Select a mood to begin curation.',
+        activeStatus: 'Live curation in progress. Every choice reshapes the proposal.',
+        submittedStatus: 'Dossier generated. Awaiting LINAS contact channel.',
+        mood: {
+          'Scenic road': 'Scenic road', 'Water and coast': 'Water and coast', 'City escape': 'City escape', 'Local culture': 'Local culture'
+        },
+        guide: { 'Fully guided': 'Fully guided', 'Partly guided': 'Partly guided' },
+        pace: { 'Relaxed': 'Relaxed', 'Balanced': 'Balanced', 'Ambitious': 'Ambitious' },
+        narrative: {
+          'Scenic road': 'Tailoring for asphalt rhythm & elevation — a route designed around quiet roads, views and controlled effort.',
+          'Water and coast': 'Composing a water-led day with ferry timing, swim pauses and slow coastal light.',
+          'City escape': 'Designing a refined departure from the city into a quieter, more memorable landscape.',
+          'Local culture': 'Layering local texture into the ride: food, people, markets and a stop that feels earned.'
+        },
+        signals: {
+          scenicAmbitious: 'Tailoring for asphalt rhythm & elevation with longer pulls and fewer unnecessary stops.',
+          groupAmbitious: 'Optimizing peloton dynamics for intermediate riders and a confident small-group tempo.',
+          partlyGuided: 'Balancing guided judgement with elegant independent sections.',
+          fullyGuided: 'Keeping the day fully hosted so route decisions, timing and stops feel effortless.',
+          region: (region) => `Region note captured for LINAS: ${region}.`,
+          notes: 'Personal taste notes added to the route brief.'
+        }
+      },
+      no: {
+        step: 'Steg', configurator: 'Concierge-konfigurator', done: 'Be om forslag', complete: 'Dossier klart',
+        summaryEyebrow: 'Levende forslag', title: 'Et privat sykkelkapittel tar form.',
+        labels: { mood: 'Stemning', guide: 'Guide', group: 'Gruppe', region: 'Region' },
+        regionFallback: 'Åpen Europa-brief', seasonFallback: 'Fleksibel sesong',
+        regionNote: 'Skriv det som en beskjed til Linas: hvor skal følelsen av ruten begynne?',
+        tasteNote: 'Fortell conciergen hva som vil gjøre dagen personlig designet.',
+        regionPlaceholder: 'Linas, jeg ser for meg Alpene, en kystvei eller et roligere sted...',
+        notesPlaceholder: 'Jeg bryr meg om morgenlys, rolig asfalt, én eksepsjonell utsikt og et sted å stoppe for lokal mat...',
+        loading: ['Analyserer ruteintelligens...', 'Genererer skreddersydd dossier...', 'Matcher stemning, tempo og guiding...'],
+        successTitle: 'Ditt private rutedossier er satt i kø.',
+        successText: 'Prototypen oppfører seg nå som en concierge-flyt. Senere kan siste steg kobles til e-post, WhatsApp eller booking-backend.',
+        idleStatus: 'Ruteintelligens venter. Velg stemning for å starte kuratering.',
+        activeStatus: 'Live kuratering pågår. Hvert valg former forslaget.',
+        submittedStatus: 'Dossier generert. Venter på endelig LINAS-kontaktkanal.',
+        mood: { 'Scenic road': 'Scenisk vei', 'Water and coast': 'Vann og kyst', 'City escape': 'Byflukt', 'Local culture': 'Lokal kultur' },
+        guide: { 'Fully guided': 'Fullt guidet', 'Partly guided': 'Delvis guidet' },
+        pace: { 'Relaxed': 'Rolig', 'Balanced': 'Balansert', 'Ambitious': 'Ambisiøst' },
+        narrative: {
+          'Scenic road': 'Skreddersyr asfalt-rytme og høydeprofil — en rute bygget rundt rolige veier, utsikt og kontrollert innsats.',
+          'Water and coast': 'Setter sammen en vannstyrt dag med fergetiming, badestopp og rolig kystlys.',
+          'City escape': 'Designer en raffinert avreise fra byen mot et roligere og mer minneverdig landskap.',
+          'Local culture': 'Legger lokal tekstur inn i turen: mat, mennesker, markeder og et stopp som føles fortjent.'
+        },
+        signals: {
+          scenicAmbitious: 'Skreddersyr asfalt-rytme og høydeprofil med lengre drag og færre unødvendige stopp.',
+          groupAmbitious: 'Optimaliserer liten-gruppe-dynamikk for ryttere med trygg og ambisiøs flyt.',
+          partlyGuided: 'Balanserer guidet dømmekraft med elegante selvstendige etapper.',
+          fullyGuided: 'Holder dagen fullt vertet slik at rutevalg, timing og stopp føles sømløst.',
+          region: (region) => `Regionnotat fanget for LINAS: ${region}.`,
+          notes: 'Personlige smaksnotater lagt inn i rutebriefen.'
+        }
+      },
+      lt: {
+        step: 'Žingsnis', configurator: 'Concierge konfigūratorius', done: 'Prašyti pasiūlymo', complete: 'Dosjė paruošta',
+        summaryEyebrow: 'Gyvas pasiūlymas', title: 'Privatus dviračių skyrius formuojasi.',
+        labels: { mood: 'Nuotaika', guide: 'Gidas', group: 'Grupė', region: 'Regionas' },
+        regionFallback: 'Atvira Europos kryptis', seasonFallback: 'Sezonas lankstus',
+        regionNote: 'Parašyk tai kaip žinutę Linui: kur turėtų prasidėti maršruto jausmas?',
+        tasteNote: 'Pasakyk concierge, kas padarytų dieną asmeniškai sukurtą.',
+        regionPlaceholder: 'Linai, įsivaizduoju Alpes, pakrantės kelią arba kur nors ramiau...',
+        notesPlaceholder: 'Man svarbu rytinė šviesa, ramus asfaltas, vienas išskirtinis vaizdas ir vieta sustoti vietiniam maistui...',
+        loading: ['Analizuojama maršruto logika...', 'Kuriamas asmeninis dosjė...', 'Derinama nuotaika, tempas ir gidas...'],
+        successTitle: 'Jūsų privatus maršruto dosjė įtrauktas į eilę.',
+        successText: 'Prototipas dabar veikia kaip concierge eiga. Galutinis žingsnis vėliau gali būti prijungtas prie el. pašto, WhatsApp arba rezervavimo sistemos.',
+        idleStatus: 'Maršruto analizė laukia. Pasirink nuotaiką ir pradėk kuravimą.',
+        activeStatus: 'Gyvas kuravimas vyksta. Kiekvienas pasirinkimas keičia pasiūlymą.',
+        submittedStatus: 'Dosjė sugeneruota. Laukiama galutinio LINAS kontaktinio kanalo.',
+        mood: { 'Scenic road': 'Vaizdingas kelias', 'Water and coast': 'Vanduo ir pakrantė', 'City escape': 'Pabėgimas iš miesto', 'Local culture': 'Vietinė kultūra' },
+        guide: { 'Fully guided': 'Pilnai su gidu', 'Partly guided': 'Iš dalies su gidu' },
+        pace: { 'Relaxed': 'Ramus', 'Balanced': 'Subalansuotas', 'Ambitious': 'Ambicingas' },
+        narrative: {
+          'Scenic road': 'Kuriamas asfalto ritmas ir aukščio profilis — maršrutas aplink ramius kelius, vaizdus ir kontroliuojamą pastangą.',
+          'Water and coast': 'Dėliojama vandens vedama diena su keltu, maudynių pauzėmis ir lėta pakrantės šviesa.',
+          'City escape': 'Kuriamas rafinuotas išvykimas iš miesto į tylesnį, labiau įsimenantį kraštovaizdį.',
+          'Local culture': 'Į važiavimą įpinama vietinė tekstūra: maistas, žmonės, turgūs ir sustojimas, kurio verta siekti.'
+        },
+        signals: {
+          scenicAmbitious: 'Kuriamas asfalto ritmas ir aukščio profilis su ilgesniais tempimais ir mažiau nereikalingų sustojimų.',
+          groupAmbitious: 'Optimizuojama mažos grupės dinamika užtikrintam ir ambicingam tempui.',
+          partlyGuided: 'Derinamas gido sprendimas su elegantiškomis savarankiškomis atkarpomis.',
+          fullyGuided: 'Diena pilnai lydima, kad maršrutas, laikas ir sustojimai jaustųsi lengvai.',
+          region: (region) => `Regiono pastaba LINAS: ${region}.`,
+          notes: 'Asmeninės skonio pastabos pridėtos prie maršruto briefo.'
+        }
+      }
+    };
+
+    const moodImages = {
+      'Scenic road': 'images/08-open-road.jpg',
+      'Water and coast': 'images/03-water-view.jpg',
+      'City escape': 'images/04-city-ride.jpg',
+      'Local culture': 'images/05-road-sign-bike.jpg'
+    };
+
+    function formValue(name, fallback = '') {
+      const el = form.querySelector(`[name="${name}"]:checked`) || form.querySelector(`[name="${name}"]`);
+      return el ? el.value.trim() : fallback;
+    }
+
+    function fieldValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function updatePlaceholders() {
+      const copy = conciergeCopy[state.lang];
+      const region = document.getElementById('region');
+      const notes = document.getElementById('notes');
+      if (region) region.placeholder = copy.regionPlaceholder;
+      if (notes) notes.placeholder = copy.notesPlaceholder;
+      setText('regionNote', copy.regionNote);
+      setText('tasteNote', copy.tasteNote);
+      setText('summaryEyebrow', copy.summaryEyebrow);
+      setText('proposalTitle', copy.title);
+      setText('labelMood', copy.labels.mood);
+      setText('labelGuide', copy.labels.guide);
+      setText('labelGroup', copy.labels.group);
+      setText('labelRegion', copy.labels.region);
+      setText('successTitle', copy.successTitle);
+      setText('successText', copy.successText);
+    }
+
+    function updateProposalSummary() {
+      const copy = conciergeCopy[state.lang];
+      const mood = formValue('mood', 'Scenic road');
+      const guide = formValue('guide', 'Fully guided');
+      const guests = fieldValue('guests') || '2';
+      const pace = fieldValue('pace') || 'Balanced';
+      const region = fieldValue('region');
+      const season = fieldValue('season');
+      const notesValue = fieldValue('notes');
+
+      setText('proposalMood', copy.mood[mood] || mood);
+      setText('proposalGuide', copy.guide[guide] || guide);
+      setText('proposalGroup', `${guests} · ${copy.pace[pace] || pace}`);
+      setText('proposalRegion', region || season || copy.regionFallback);
+      setText('proposalNarrative', copy.narrative[mood] || copy.narrative['Scenic road']);
+      setText('proposalStatus', state.submitting ? copy.submittedStatus : copy.activeStatus);
+
+      const img = moodImages[mood] || moodImages['Scenic road'];
+      if (proposalImage && proposalImage.getAttribute('src') !== img) {
+        proposalImage.classList.add('updating');
+        setTimeout(() => {
+          proposalImage.src = img;
+          proposalImage.classList.remove('updating');
+        }, 120);
+      }
+
+      const signals = [];
+      if (mood === 'Scenic road' && pace === 'Ambitious') signals.push(copy.signals.scenicAmbitious);
+      if (pace === 'Ambitious' && guests === '3–4') signals.push(copy.signals.groupAmbitious);
+      signals.push(guide === 'Partly guided' ? copy.signals.partlyGuided : copy.signals.fullyGuided);
+      if (region) signals.push(copy.signals.region(region));
+      if (notesValue) signals.push(copy.signals.notes);
+
+      const holder = document.getElementById('proposalSignals');
+      if (holder) {
+        holder.replaceChildren(...signals.slice(0, 4).map((line) => {
+          const item = document.createElement('div');
+          item.className = 'proposal-signal';
+          item.textContent = line;
+          return item;
+        }));
+      }
+    }
 
     function setLanguage(lang) {
       state.lang = lang;
@@ -997,36 +1464,77 @@
         if (translations[lang] && translations[lang][key]) el.textContent = translations[lang][key];
       });
       document.querySelectorAll('.lang button').forEach((button) => button.classList.toggle('active', button.dataset.lang === lang));
+      updatePlaceholders();
       updateStepper();
+      updateProposalSummary();
     }
 
     function updateStepper() {
+      const copy = conciergeCopy[state.lang];
       stepEls.forEach((step, index) => step.classList.toggle('active', index === state.step));
       dotEls.forEach((dot, index) => dot.classList.toggle('active', index <= state.step));
-      prevBtn.disabled = state.step === 0;
-      const doneLabel = state.lang === 'no' ? 'Bekreft prototype' : state.lang === 'lt' ? 'Patvirtinti prototipą' : 'Confirm prototype';
-      nextBtn.textContent = state.step === stepEls.length - 1 ? doneLabel : translations[state.lang].nextBtn;
+      prevBtn.disabled = state.step === 0 || state.submitting;
+      nextBtn.disabled = state.submitting;
+      nextBtn.textContent = state.step === stepEls.length - 1 ? copy.done : translations[state.lang].nextBtn;
       prevBtn.textContent = translations[state.lang].prevBtn;
+      if (state.submitting) return;
+      stepLabel.textContent = `${copy.step} ${state.step + 1} / ${stepEls.length}`;
       note.textContent = '';
+      successState.classList.remove('active');
+    }
+
+    function runConciergeSubmit() {
+      const copy = conciergeCopy[state.lang];
+      state.submitting = true;
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      nextBtn.classList.add('loading');
+      successState.classList.remove('active');
+      let i = 0;
+      note.textContent = copy.loading[i];
+      const ticker = setInterval(() => {
+        i += 1;
+        note.textContent = copy.loading[Math.min(i, copy.loading.length - 1)];
+      }, 850);
+      setTimeout(() => {
+        clearInterval(ticker);
+        nextBtn.classList.remove('loading');
+        nextBtn.textContent = copy.complete;
+        note.textContent = '';
+        successState.classList.add('active');
+        setText('proposalStatus', copy.submittedStatus);
+        updateProposalSummary();
+      }, 2650);
     }
 
     document.querySelectorAll('.lang button').forEach((button) => {
       button.addEventListener('click', () => setLanguage(button.dataset.lang));
     });
 
+    form.addEventListener('input', updateProposalSummary);
+    form.addEventListener('change', updateProposalSummary);
+
     prevBtn.addEventListener('click', () => {
+      if (state.submitting) return;
       state.step = Math.max(0, state.step - 1);
       updateStepper();
+      updateProposalSummary();
     });
 
     nextBtn.addEventListener('click', () => {
+      if (state.submitting) return;
       if (state.step < stepEls.length - 1) {
         state.step += 1;
         updateStepper();
+        updateProposalSummary();
         return;
       }
-      note.textContent = translations[state.lang].requestDone;
+      runConciergeSubmit();
     });
+
+    updatePlaceholders();
+    updateStepper();
+    updateProposalSummary();
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
