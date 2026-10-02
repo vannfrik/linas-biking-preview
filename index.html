@@ -38,7 +38,7 @@
       background:
         radial-gradient(circle at 12% 0%, rgba(217, 189, 122, .18), transparent 28rem),
         linear-gradient(180deg, #f8f3e8 0%, #eee6d7 48%, #111813 48%, #111813 100%);
-      overflow-x: hidden;
+      overflow-x: clip;
     }
 
     body::before {
@@ -497,67 +497,274 @@
 
     .signature-line::before { content: ""; width: 70px; height: 1px; background: var(--gold); }
 
-    .destination-board {
+    .route-atelier {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
+      grid-template-columns: minmax(320px, .82fr) minmax(0, 1.18fr);
+      gap: 18px;
+      align-items: stretch;
     }
 
-    .dest-card {
-      position: relative;
-      min-height: 390px;
+    .route-panel,
+    .micro-map {
+      border: 1px solid rgba(217,189,122,.18);
+      border-radius: 38px;
+      box-shadow: var(--shadow);
       overflow: hidden;
-      border: 1px solid rgba(255, 250, 240, .12);
-      border-radius: 30px;
-      background: var(--obsidian);
-      box-shadow: 0 28px 90px rgba(0,0,0,.24);
-      transform: translateY(0);
-      transition: transform .4s var(--ease), border-color .4s var(--ease);
     }
 
-    .dest-card:hover { transform: translateY(-6px); border-color: rgba(217, 189, 122, .5); }
-    .dest-card.large { grid-column: span 7; min-height: 560px; }
-    .dest-card.medium { grid-column: span 5; min-height: 560px; }
-    .dest-card.small { grid-column: span 4; }
-    .dest-card.wide { grid-column: span 6; }
+    .route-panel {
+      padding: clamp(22px, 3.4vw, 38px);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(217,189,122,.12), transparent 20rem),
+        linear-gradient(180deg, rgba(255,250,240,.055), rgba(255,250,240,.02)),
+        #0b100d;
+    }
 
-    .dest-card img {
+    .route-topline,
+    .map-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+      color: rgba(255,250,240,.58);
+      font-size: .68rem;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .route-topline span:first-child,
+    .map-topline span:first-child { color: var(--champagne); }
+
+    .route-stack { display: grid; gap: 10px; }
+
+    .route-choice {
+      position: relative;
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      gap: 14px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(.92) contrast(1.05);
-      transition: transform 1.1s var(--ease), filter .5s var(--ease);
-    }
-
-    .dest-card:hover img { transform: scale(1.045); filter: saturate(1.05) contrast(1.08); }
-
-    .dest-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(0deg, rgba(8,11,10,.82) 0%, rgba(8,11,10,.28) 48%, rgba(8,11,10,.08) 100%);
-    }
-
-    .dest-label {
-      position: absolute;
-      z-index: 2;
-      left: 22px;
-      right: 22px;
-      bottom: 22px;
+      min-height: 118px;
+      padding: 16px;
+      border: 1px solid rgba(255,250,240,.1);
+      border-radius: 26px;
+      cursor: pointer;
       color: var(--ivory);
+      text-align: left;
+      background: rgba(255,250,240,.045);
+      transition: border-color .34s var(--ease), background .34s var(--ease), transform .34s var(--ease), box-shadow .34s var(--ease);
     }
 
-    .dest-label b {
-      display: block;
-      margin-bottom: 8px;
+    .route-choice:hover,
+    .route-choice:focus-visible,
+    .route-choice.is-active {
+      border-color: rgba(217,189,122,.54);
+      background: rgba(217,189,122,.09);
+      box-shadow: 0 18px 58px rgba(0,0,0,.28);
+      transform: translateY(-2px);
+      outline: 0;
+    }
+
+    .route-index {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(217,189,122,.25);
+      border-radius: 999px;
       color: var(--champagne);
       font-family: var(--serif);
-      font-size: clamp(1.7rem, 3vw, 3rem);
-      font-weight: 500;
-      letter-spacing: -.045em;
+      font-size: 1.05rem;
     }
 
-    .dest-label span { color: rgba(255,250,240,.72); line-height: 1.45; }
+    .route-copy b {
+      display: block;
+      margin-bottom: 6px;
+      font-family: var(--serif);
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      font-weight: 500;
+      letter-spacing: -.04em;
+    }
+
+    .route-copy span { color: rgba(255,250,240,.68); font-size: .94rem; line-height: 1.45; }
+
+    .route-metric {
+      align-self: start;
+      white-space: nowrap;
+      padding: 7px 10px;
+      border: 1px solid rgba(217,189,122,.2);
+      border-radius: 999px;
+      color: rgba(217,189,122,.88);
+      background: rgba(255,250,240,.045);
+      font-size: .66rem;
+      font-weight: 950;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .route-hint {
+      margin: 18px 0 0;
+      color: rgba(255,250,240,.54);
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+
+    .micro-map {
+      position: sticky;
+      top: 108px;
+      min-height: 720px;
+      padding: clamp(18px, 3vw, 28px);
+      color: var(--ivory);
+      background:
+        radial-gradient(circle at 72% 16%, rgba(217,189,122,.14), transparent 18rem),
+        linear-gradient(180deg, rgba(255,250,240,.035), rgba(255,250,240,.015)),
+        #070a09;
+    }
+
+    .route-map {
+      width: 100%;
+      min-height: 390px;
+      border: 1px solid rgba(255,250,240,.08);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(217,189,122,.08), transparent 44%),
+        linear-gradient(rgba(255,250,240,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,250,240,.035) 1px, transparent 1px),
+        #0a0f0d;
+      background-size: auto, 44px 44px, 44px 44px;
+      overflow: hidden;
+    }
+
+    .map-road,
+    .map-contour,
+    .map-water {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .map-contour { stroke: rgba(255,250,240,.07); stroke-width: 1.1; }
+    .map-road { stroke: rgba(255,250,240,.13); stroke-width: 2.1; stroke-dasharray: 7 10; }
+    .map-water { stroke: rgba(126,171,180,.24); stroke-width: 16; opacity: .58; }
+
+    .route-line {
+      fill: none;
+      pathLength: 1;
+      stroke: var(--champagne);
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      opacity: 0;
+      filter: drop-shadow(0 0 14px rgba(217,189,122,.48));
+      transition: stroke-dashoffset .96s var(--ease), opacity .28s var(--ease), stroke-width .28s var(--ease);
+    }
+
+    .route-line.is-active {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+
+    .route-line.is-ghost {
+      stroke-dashoffset: 0;
+      opacity: .13;
+      stroke-width: 3;
+      filter: none;
+    }
+
+    .route-pin {
+      opacity: .2;
+      transform-box: fill-box;
+      transform-origin: center;
+      transform: scale(.86);
+      transition: opacity .34s var(--ease), transform .34s var(--ease);
+    }
+
+    .route-pin.is-active { opacity: 1; transform: scale(1); }
+    .route-pin circle:first-child { fill: rgba(217,189,122,.18); stroke: rgba(217,189,122,.6); stroke-width: 1; }
+    .route-pin circle:last-child { fill: var(--champagne); filter: drop-shadow(0 0 8px rgba(217,189,122,.7)); }
+    .route-pin text { fill: rgba(255,250,240,.78); font: 700 15px var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+
+    .map-dossier {
+      display: grid;
+      grid-template-columns: 1fr .78fr;
+      gap: 18px;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid rgba(217,189,122,.16);
+      border-radius: 28px;
+      background: rgba(255,250,240,.045);
+    }
+
+    .dossier-label {
+      margin-bottom: 8px;
+      color: var(--champagne);
+      font-size: .68rem;
+      font-weight: 950;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .map-dossier h3 {
+      margin: 0 0 9px;
+      font-size: clamp(1.9rem, 3vw, 3.05rem);
+      line-height: .95;
+      letter-spacing: -.055em;
+    }
+
+    .map-dossier p { margin: 0; color: rgba(255,250,240,.68); line-height: 1.55; }
+
+    .elevation-profile {
+      display: flex;
+      align-items: end;
+      gap: 5px;
+      height: 92px;
+      margin-top: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255,250,240,.08);
+      border-radius: 20px;
+      background: rgba(0,0,0,.16);
+    }
+
+    .elevation-profile span {
+      flex: 1;
+      min-width: 5px;
+      border-radius: 999px 999px 4px 4px;
+      background: linear-gradient(180deg, var(--champagne), rgba(217,189,122,.18));
+      transform-origin: bottom;
+      animation: barRise .46s var(--ease) both;
+    }
+
+    @keyframes barRise { from { transform: scaleY(.08); opacity: .25; } to { transform: scaleY(1); opacity: 1; } }
+
+    .route-highlights {
+      display: grid;
+      gap: 9px;
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .route-highlights li {
+      display: flex;
+      gap: 9px;
+      color: rgba(255,250,240,.72);
+      font-size: .9rem;
+      line-height: 1.4;
+    }
+
+    .route-highlights li::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      margin-top: .48em;
+      border-radius: 999px;
+      background: var(--champagne);
+      box-shadow: 0 0 0 6px rgba(217,189,122,.1);
+    }
 
     .experience-strip {
       display: grid;
@@ -1077,8 +1284,8 @@
 
     @media (max-width: 980px) {
       .nav-links { display: none; }
-      .hero-content, .section-head, .story-grid, .booking-shell, .concierge-configurator, .atelier, .footer-inner { grid-template-columns: 1fr; }
-      .booking-intro, .proposal-summary { position: relative; top: auto; min-height: auto; }
+      .hero-content, .section-head, .story-grid, .route-atelier, .booking-shell, .concierge-configurator, .atelier, .footer-inner { grid-template-columns: 1fr; }
+      .booking-intro, .proposal-summary, .micro-map { position: relative; top: auto; min-height: auto; }
       .hero-card { max-width: 560px; }
       .destination-board { grid-template-columns: 1fr; }
       .dest-card.large, .dest-card.medium, .dest-card.small, .dest-card.wide { grid-column: auto; min-height: 430px; }
@@ -1103,10 +1310,14 @@
       .hero-scroll-rail { display: none; }
       .hero-content { transform: none; }
       .hero-media img { transform: scale(var(--hero-zoom)); }
+      .route-choice { grid-template-columns: 34px 1fr; }
+      .route-metric { grid-column: 2; justify-self: start; }
+      .map-dossier { grid-template-columns: 1fr; }
+      .route-map { min-height: 310px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .hero-media img, .hero-content, .hero-scroll-rail span { transition: none; animation: none; }
+      .hero-media img, .hero-content, .hero-scroll-rail span, .route-line, .elevation-profile span { transition: none; animation: none; }
       .status-pulse { animation: none; }
     }
   </style>
@@ -1189,14 +1400,62 @@
           </div>
           <p data-i18n="destLead">Each chapter can become a fully guided or partly guided route: city-to-water, road-to-viewpoint, mountain-to-small-town, or a slower cultural day with activity stops along the way.</p>
         </div>
-        <div class="destination-board">
-          <article class="dest-card large reveal"><img src="images/08-open-road.jpg" alt="Open road route"><div class="dest-label"><b data-i18n="card1Title">The long quiet road</b><span data-i18n="card1Text">For riders who want space, tempo and the feeling of travelling between places — not just visiting them.</span></div></article>
-          <article class="dest-card medium reveal"><img src="images/03-water-view.jpg" alt="Water and landscape route"><div class="dest-label"><b data-i18n="card2Title">Water, ferry, swim</b><span data-i18n="card2Text">Coastal or lake-led rides where the pause is as important as the destination.</span></div></article>
-          <article class="dest-card small reveal"><img src="images/04-city-ride.jpg" alt="Urban cycling route"><div class="dest-label"><b data-i18n="card3Title">City to escape</b><span data-i18n="card3Text">A refined first-day format: begin where the guest is, then leave the ordinary streets behind.</span></div></article>
-          <article class="dest-card small reveal"><img src="images/05-road-sign-bike.jpg" alt="Bike by a road sign"><div class="dest-label"><b data-i18n="card4Title">Route intelligence</b><span data-i18n="card4Text">The right road, season, difficulty and stop sequence — chosen before the guest arrives.</span></div></article>
-          <article class="dest-card small reveal"><img src="images/07-mountain-city.jpg" alt="Mountain city viewpoint"><div class="dest-label"><b data-i18n="card5Title">Viewpoints with meaning</b><span data-i18n="card5Text">Not a random photo stop, but the moment the whole route has been pointing toward.</span></div></article>
-          <article class="dest-card wide reveal"><img src="images/06-two-bikes-mountain.jpg" alt="Two bikes in mountain landscape"><div class="dest-label"><b data-i18n="card6Title">Private small groups</b><span data-i18n="card6Text">Premium rides should stay personal: couples, friends, founders, teams or solo travellers.</span></div></article>
-          <article class="dest-card wide reveal"><img src="images/09-bike-path-pov.jpg" alt="Point of view from a bike path"><div class="dest-label"><b data-i18n="card7Title">Guided where it matters</b><span data-i18n="card7Text">Fully guided when judgement is needed. Partly guided when independence makes the day better.</span></div></article>
+        <div class="route-atelier reveal" id="routeAtelier">
+          <div class="route-panel">
+            <div class="route-topline"><span data-i18n="routeAtelierKicker">Interactive route atelier</span><span>LINAS / route intelligence</span></div>
+            <div class="route-stack" role="list" aria-label="Route chapters">
+              <button class="route-choice is-active" type="button" data-route="quiet-road" aria-pressed="true">
+                <span class="route-index">01</span><span class="route-copy"><b data-i18n="card1Title">The long quiet road</b><span data-i18n="card1Text">For riders who want space, tempo and the feeling of travelling between places — not just visiting them.</span></span><span class="route-metric">68 km · +920 m</span>
+              </button>
+              <button class="route-choice" type="button" data-route="water-ferry" aria-pressed="false">
+                <span class="route-index">02</span><span class="route-copy"><b data-i18n="card2Title">Water, ferry, swim</b><span data-i18n="card2Text">Coastal or lake-led rides where the pause is as important as the destination.</span></span><span class="route-metric">54 km · +430 m</span>
+              </button>
+              <button class="route-choice" type="button" data-route="city-escape" aria-pressed="false">
+                <span class="route-index">03</span><span class="route-copy"><b data-i18n="card3Title">City to escape</b><span data-i18n="card3Text">A refined first-day format: begin where the guest is, then leave the ordinary streets behind.</span></span><span class="route-metric">41 km · +510 m</span>
+              </button>
+              <button class="route-choice" type="button" data-route="viewpoint" aria-pressed="false">
+                <span class="route-index">04</span><span class="route-copy"><b data-i18n="card5Title">Viewpoints with meaning</b><span data-i18n="card5Text">Not a random photo stop, but the moment the whole route has been pointing toward.</span></span><span class="route-metric">73 km · +1180 m</span>
+              </button>
+            </div>
+            <p class="route-hint" data-i18n="routeHoverHint">Hover or tap a route chapter to sketch it on the private map.</p>
+          </div>
+
+          <aside class="micro-map" aria-label="Interactive route atelier map">
+            <div class="map-topline"><span data-i18n="routeMapTitle">Private route sketch</span><span id="activeRouteCode">LINAS / 01</span></div>
+            <svg class="route-map" viewBox="0 0 760 520" role="img" aria-labelledby="mapTitle mapDesc">
+              <title id="mapTitle">LINAS interactive micro-map</title>
+              <desc id="mapDesc">A dark minimal vector map where the selected route draws itself with elevation notes.</desc>
+              <path class="map-water" d="M-40 360 C 100 318 158 375 262 338 C 352 306 392 378 512 322 C 616 274 704 318 820 254" />
+              <path class="map-contour" d="M42 112 C162 54 255 102 350 76 C448 50 536 64 704 28" />
+              <path class="map-contour" d="M20 188 C146 128 268 172 372 136 C488 96 570 138 730 94" />
+              <path class="map-contour" d="M48 266 C168 222 254 246 356 210 C486 166 598 212 732 154" />
+              <path class="map-contour" d="M26 430 C126 398 224 430 336 380 C468 322 558 376 736 304" />
+              <path class="map-road" d="M92 416 C 174 356 218 326 302 292 C392 255 456 188 650 132" />
+              <path class="map-road" d="M70 300 C168 326 226 260 316 272 C424 288 514 278 690 226" />
+              <path class="map-road" d="M128 450 C214 388 224 328 318 268 C414 206 452 144 612 116" />
+              <path class="route-line is-active" data-route-line="quiet-road" pathLength="1" d="M105 385 C 195 314 253 294 319 246 S 476 157 652 120" />
+              <path class="route-line is-ghost" data-route-line="water-ferry" pathLength="1" d="M82 320 C 162 342 205 288 282 284 C 368 278 418 338 503 302 C 568 276 630 294 688 250" />
+              <path class="route-line is-ghost" data-route-line="city-escape" pathLength="1" d="M138 430 C 190 390 205 344 254 318 C 326 280 346 240 388 202 C 428 166 484 150 546 182" />
+              <path class="route-line is-ghost" data-route-line="viewpoint" pathLength="1" d="M138 410 C 218 356 236 294 294 246 C 376 178 430 130 514 116 C 572 106 638 78 700 68" />
+              <g class="route-pin is-active" data-route-pin="quiet-road"><circle cx="512" cy="156" r="21"/><circle cx="512" cy="156" r="5"/><text x="534" y="161">km 42</text></g>
+              <g class="route-pin" data-route-pin="water-ferry"><circle cx="505" cy="302" r="21"/><circle cx="505" cy="302" r="5"/><text x="527" y="307">ferry</text></g>
+              <g class="route-pin" data-route-pin="city-escape"><circle cx="254" cy="318" r="21"/><circle cx="254" cy="318" r="5"/><text x="276" y="323">gate</text></g>
+              <g class="route-pin" data-route-pin="viewpoint"><circle cx="638" cy="82" r="21"/><circle cx="638" cy="82" r="5"/><text x="660" y="87">summit</text></g>
+            </svg>
+            <div class="map-dossier">
+              <div>
+                <div class="dossier-label" data-i18n="routeActiveLabel">Active route</div>
+                <h3 id="atelierRouteTitle">The long quiet road</h3>
+                <p id="atelierRouteNarrative">Drawing a quiet asphalt line with one hidden viewpoint and enough elevation to feel earned.</p>
+              </div>
+              <div>
+                <div class="dossier-label" data-i18n="routeElevationLabel">Elevation profile</div>
+                <div class="elevation-profile" id="routeElevationProfile" aria-hidden="true"></div>
+                <div class="dossier-label" data-i18n="routeHighlightsLabel" style="margin-top:14px;">Route intelligence notes</div>
+                <ul class="route-highlights" id="routeHighlights"></ul>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
@@ -1336,17 +1595,17 @@
   <script>
     const translations = {
       en: {
-        brandTag:'High-end Biking Experiences', navStory:'Story', navDestinations:'Destinations', navBooking:'Private request', navContact:'Contact', heroStatus:'Current curation status: 3 private slots left for Autumn 2026', heroKicker:'Private guided and partly guided Europe rides', heroTitle:'Beyond the road. Into the place.', heroLead:'LINAS designs high-end biking experiences shaped by two decades of local knowledge: discreet routes, human rhythm, hidden viewpoints and a booking flow that feels personal from the first click.', heroCta:'Start a private request', heroCta2:'See the story', stat1:'years of lived route knowledge', stat2:'private itinerary at a time', stat3:'quiet roads, water, cities and climbs', storyKicker:'Founder narrative', storyTitle:'A luxury brand built from real miles.', storyLead:'The photos are not decorative. They are proof of road memory, patience and a personal standard. LINAS should feel less like mass tourism and more like being invited into a route only an experienced rider would choose.', storyQuote:'Make your dream happen — but make the road worthy of it.', storyText:'This direction frames Linas as the curator: the person who knows when to ride, where to pause, when to bring in a local host and when to leave the guest alone with the landscape.', storySig:'LINAS route atelier', destKicker:'Hidden destination language', destTitle:'Not tours. Private biking chapters.', destLead:'Each chapter can become a fully guided or partly guided route: city-to-water, road-to-viewpoint, mountain-to-small-town, or a slower cultural day with activity stops along the way.', card1Title:'The long quiet road', card1Text:'For riders who want space, tempo and the feeling of travelling between places — not just visiting them.', card2Title:'Water, ferry, swim', card2Text:'Coastal or lake-led rides where the pause is as important as the destination.', card3Title:'City to escape', card3Text:'A refined first-day format: begin where the guest is, then leave the ordinary streets behind.', card4Title:'Route intelligence', card4Text:'The right road, season, difficulty and stop sequence — chosen before the guest arrives.', card5Title:'Viewpoints with meaning', card5Text:'Not a random photo stop, but the moment the whole route has been pointing toward.', card6Title:'Private small groups', card6Text:'Premium rides should stay personal: couples, friends, founders, teams or solo travellers.', card7Title:'Guided where it matters', card7Text:'Fully guided when judgement is needed. Partly guided when independence makes the day better.', expKicker:'Experience architecture', expTitle:'High-end without becoming stiff.', expLead:'The offer should feel premium because it is calm, prepared and personal — not because it is overloaded with luxury clichés.', exp1Title:'Curated before arrival', exp1Text:'The guest answers a few precise questions. LINAS responds with a fitted route concept, not a generic package.', exp2Title:'Guided or partly guided', exp2Text:'Some days need a guide the whole way. Others are better with a guided start, hosted activity and elegant self-paced sections.', exp3Title:'Local texture', exp3Text:'Small places, good pauses, real views, food, water, ferries, markets and people — added only when they serve the route.', bookKicker:'Seamless private request', bookTitle:'A booking flow that feels like a concierge.', bookLead:'This is a front-end prototype for the future inquiry process. The goal is not to force a quick checkout, but to collect enough taste, timing and riding context for LINAS to answer with a premium proposal.', step1Title:'What kind of day should it be?', step1Lead:'Choose the mood first. The route can be designed around that.', mood1:'Scenic road', mood1Text:'Views, distance, rhythm and quiet roads.', mood2:'Water and coast', mood2Text:'Lake, ferry, swim, harbour or coastline.', mood3:'City escape', mood3Text:'Start central, finish somewhere memorable.', mood4:'Local culture', mood4Text:'Food, market, local host or small hidden stop.', step2Title:'How private should it feel?', step2Lead:'Premium positioning starts with group size and rhythm.', guestsLabel:'Guests', paceLabel:'Pace', pace1:'Relaxed', pace2:'Balanced', pace3:'Ambitious', guide1:'Fully guided', guide1Text:'LINAS or partner guides the whole experience.', guide2:'Partly guided', guide2Text:'Guided start, hosted stops, independent sections.', step3Title:'Timing and route notes', step3Lead:'Keep it light. This should feel like a concierge request, not paperwork.', seasonLabel:'Preferred season', regionLabel:'Region idea', notesLabel:'Taste notes', step4Title:'Request a LINAS proposal', step4Lead:'Contact details are intentionally left open until LINAS decides the final channel. This button currently confirms the front-end flow only.', nameLabel:'Name', contactLabel:'Contact', prevBtn:'Back', nextBtn:'Continue', contactKicker:'LINAS route atelier', contactTitle:'Personal, discreet, prepared.', contactLead:'The final contact address comes later. The site should already signal the standard: every inquiry is treated as a route to be designed, not a seat to be sold.', contactCta:'Start private request', proof1Title:'Focus', proof1Text:'The founder story can be read through the image text: stay focused, make the past a lesson.', proof2Title:'Local judgement', proof2Text:'Luxury is knowing which road to take, and which one to skip.', proof3Title:'Pauses with purpose', proof3Text:'Water, food, culture or a view — every stop should earn its place.', proof4Title:'Guest rhythm', proof4Text:'The best routes feel designed around the person riding them.', footerText:'High-end biking experiences · guided and partly guided · Europe · concept prototype', footerTop:'Back to top', requestDone:'Prototype request captured. Final contact/send channel still needs LINAS details.'
+        brandTag:'High-end Biking Experiences', navStory:'Story', navDestinations:'Destinations', navBooking:'Private request', navContact:'Contact', heroStatus:'Current curation status: 3 private slots left for Autumn 2026', heroKicker:'Private guided and partly guided Europe rides', heroTitle:'Beyond the road. Into the place.', heroLead:'LINAS designs high-end biking experiences shaped by two decades of local knowledge: discreet routes, human rhythm, hidden viewpoints and a booking flow that feels personal from the first click.', heroCta:'Start a private request', heroCta2:'See the story', stat1:'years of lived route knowledge', stat2:'private itinerary at a time', stat3:'quiet roads, water, cities and climbs', storyKicker:'Founder narrative', storyTitle:'A luxury brand built from real miles.', storyLead:'The photos are not decorative. They are proof of road memory, patience and a personal standard. LINAS should feel less like mass tourism and more like being invited into a route only an experienced rider would choose.', storyQuote:'Make your dream happen — but make the road worthy of it.', storyText:'This direction frames Linas as the curator: the person who knows when to ride, where to pause, when to bring in a local host and when to leave the guest alone with the landscape.', storySig:'LINAS route atelier', destKicker:'Hidden destination language', destTitle:'Not tours. Private biking chapters.', destLead:'Each chapter can become a fully guided or partly guided route: city-to-water, road-to-viewpoint, mountain-to-small-town, or a slower cultural day with activity stops along the way.', routeAtelierKicker:'Interactive route atelier', routeMapTitle:'Private route sketch', routeActiveLabel:'Active route', routeElevationLabel:'Elevation profile', routeHighlightsLabel:'Route intelligence notes', routeHoverHint:'Hover or tap a route chapter to sketch it on the private map.', card1Title:'The long quiet road', card1Text:'For riders who want space, tempo and the feeling of travelling between places — not just visiting them.', card2Title:'Water, ferry, swim', card2Text:'Coastal or lake-led rides where the pause is as important as the destination.', card3Title:'City to escape', card3Text:'A refined first-day format: begin where the guest is, then leave the ordinary streets behind.', card4Title:'Route intelligence', card4Text:'The right road, season, difficulty and stop sequence — chosen before the guest arrives.', card5Title:'Viewpoints with meaning', card5Text:'Not a random photo stop, but the moment the whole route has been pointing toward.', card6Title:'Private small groups', card6Text:'Premium rides should stay personal: couples, friends, founders, teams or solo travellers.', card7Title:'Guided where it matters', card7Text:'Fully guided when judgement is needed. Partly guided when independence makes the day better.', expKicker:'Experience architecture', expTitle:'High-end without becoming stiff.', expLead:'The offer should feel premium because it is calm, prepared and personal — not because it is overloaded with luxury clichés.', exp1Title:'Curated before arrival', exp1Text:'The guest answers a few precise questions. LINAS responds with a fitted route concept, not a generic package.', exp2Title:'Guided or partly guided', exp2Text:'Some days need a guide the whole way. Others are better with a guided start, hosted activity and elegant self-paced sections.', exp3Title:'Local texture', exp3Text:'Small places, good pauses, real views, food, water, ferries, markets and people — added only when they serve the route.', bookKicker:'Seamless private request', bookTitle:'A booking flow that feels like a concierge.', bookLead:'This is a front-end prototype for the future inquiry process. The goal is not to force a quick checkout, but to collect enough taste, timing and riding context for LINAS to answer with a premium proposal.', step1Title:'What kind of day should it be?', step1Lead:'Choose the mood first. The route can be designed around that.', mood1:'Scenic road', mood1Text:'Views, distance, rhythm and quiet roads.', mood2:'Water and coast', mood2Text:'Lake, ferry, swim, harbour or coastline.', mood3:'City escape', mood3Text:'Start central, finish somewhere memorable.', mood4:'Local culture', mood4Text:'Food, market, local host or small hidden stop.', step2Title:'How private should it feel?', step2Lead:'Premium positioning starts with group size and rhythm.', guestsLabel:'Guests', paceLabel:'Pace', pace1:'Relaxed', pace2:'Balanced', pace3:'Ambitious', guide1:'Fully guided', guide1Text:'LINAS or partner guides the whole experience.', guide2:'Partly guided', guide2Text:'Guided start, hosted stops, independent sections.', step3Title:'Timing and route notes', step3Lead:'Keep it light. This should feel like a concierge request, not paperwork.', seasonLabel:'Preferred season', regionLabel:'Region idea', notesLabel:'Taste notes', step4Title:'Request a LINAS proposal', step4Lead:'Contact details are intentionally left open until LINAS decides the final channel. This button currently confirms the front-end flow only.', nameLabel:'Name', contactLabel:'Contact', prevBtn:'Back', nextBtn:'Continue', contactKicker:'LINAS route atelier', contactTitle:'Personal, discreet, prepared.', contactLead:'The final contact address comes later. The site should already signal the standard: every inquiry is treated as a route to be designed, not a seat to be sold.', contactCta:'Start private request', proof1Title:'Focus', proof1Text:'The founder story can be read through the image text: stay focused, make the past a lesson.', proof2Title:'Local judgement', proof2Text:'Luxury is knowing which road to take, and which one to skip.', proof3Title:'Pauses with purpose', proof3Text:'Water, food, culture or a view — every stop should earn its place.', proof4Title:'Guest rhythm', proof4Text:'The best routes feel designed around the person riding them.', footerText:'High-end biking experiences · guided and partly guided · Europe · concept prototype', footerTop:'Back to top', requestDone:'Prototype request captured. Final contact/send channel still needs LINAS details.'
       },
       no: {
-        brandTag:'Eksklusive sykkelopplevelser', navStory:'Historie', navDestinations:'Destinasjoner', navBooking:'Privat forespørsel', navContact:'Kontakt', heroStatus:'Nåværende kurateringsstatus: 3 private plasser igjen høsten 2026', heroKicker:'Private guidede og delvis guidede Europa-turer', heroTitle:'Forbi veien. Inn i stedet.', heroLead:'LINAS designer eksklusive sykkelopplevelser bygget på to tiår med lokalkunnskap: diskrete ruter, menneskelig rytme, skjulte utsiktspunkt og en bookingflyt som føles personlig fra første klikk.', heroCta:'Start privat forespørsel', heroCta2:'Se historien', stat1:'år med levd rutekunnskap', stat2:'privat reiserute om gangen', stat3:'rolige veier, vann, byer og stigninger', storyKicker:'Founder-fortelling', storyTitle:'Et luksusmerke bygget av ekte kilometer.', storyLead:'Bildene er ikke pynt. De er bevis på veiminne, tålmodighet og personlig standard. LINAS skal føles mindre som masseturisme og mer som å bli invitert inn i en rute bare en erfaren syklist ville valgt.', storyQuote:'Make your dream happen — men gjør veien verdig drømmen.', storyText:'Denne retningen rammer inn Linas som kurator: personen som vet når man skal sykle, hvor man skal stoppe, når en lokal vert skal inn, og når gjesten skal få være alene med landskapet.', storySig:'LINAS ruteatelier', destKicker:'Skjulte steder', destTitle:'Ikke turer. Private sykkelkapitler.', destLead:'Hvert kapittel kan bli en fullt guidet eller delvis guidet rute: by-til-vann, vei-til-utsiktspunkt, fjell-til-småby eller en roligere kulturdag med aktivitetsstopp underveis.', card1Title:'Den lange rolige veien', card1Text:'For syklister som vil ha rom, tempo og følelsen av å reise mellom steder — ikke bare besøke dem.', card2Title:'Vann, ferge, bad', card2Text:'Kyst- eller innsjøturer der pausen er like viktig som målet.', card3Title:'By til utflukt', card3Text:'Et raffinert første-dagsformat: start der gjesten er, og forlat de vanlige gatene.', card4Title:'Ruteintelligens', card4Text:'Riktig vei, sesong, vanskelighetsgrad og stoppsekvens — valgt før gjesten ankommer.', card5Title:'Utsikt med mening', card5Text:'Ikke et tilfeldig fotostopp, men øyeblikket hele ruten har pekt mot.', card6Title:'Private små grupper', card6Text:'Premiumturer bør forbli personlige: par, venner, founders, team eller solo-reisende.', card7Title:'Guidet der det teller', card7Text:'Fullt guidet når dømmekraft trengs. Delvis guidet når frihet gjør dagen bedre.', expKicker:'Opplevelsesarkitektur', expTitle:'High-end uten å bli stivt.', expLead:'Tilbudet skal føles premium fordi det er rolig, forberedt og personlig — ikke fordi det er fullt av luksusklisjeer.', exp1Title:'Kurert før ankomst', exp1Text:'Gjesten svarer på noen få presise spørsmål. LINAS svarer med et tilpasset rutekonsept, ikke en generisk pakke.', exp2Title:'Guidet eller delvis guidet', exp2Text:'Noen dager trenger guide hele veien. Andre blir bedre med guidet start, vertede stopp og elegante selvstendige etapper.', exp3Title:'Lokal tekstur', exp3Text:'Små steder, gode pauser, ekte utsikt, mat, vann, ferger, markeder og mennesker — lagt til bare når det tjener ruten.', bookKicker:'Sømløs privat forespørsel', bookTitle:'En bookingflyt som føles som concierge.', bookLead:'Dette er en front-end-prototype for fremtidig forespørsel. Målet er ikke rask checkout, men å samle nok smak, timing og sykkelkontekst til at LINAS kan svare med et premium forslag.', step1Title:'Hva slags dag skal det være?', step1Lead:'Velg stemningen først. Ruten kan designes rundt den.', mood1:'Scenisk vei', mood1Text:'Utsikt, avstand, rytme og rolige veier.', mood2:'Vann og kyst', mood2Text:'Innsjø, ferge, bad, havn eller kystlinje.', mood3:'Byflukt', mood3Text:'Start sentralt, avslutt et sted som huskes.', mood4:'Lokal kultur', mood4Text:'Mat, marked, lokal vert eller lite skjult stopp.', step2Title:'Hvor privat skal det føles?', step2Lead:'Premium-posisjonering starter med gruppestørrelse og rytme.', guestsLabel:'Gjester', paceLabel:'Tempo', pace1:'Rolig', pace2:'Balansert', pace3:'Ambisiøst', guide1:'Fullt guidet', guide1Text:'LINAS eller partner guider hele opplevelsen.', guide2:'Delvis guidet', guide2Text:'Guidet start, vertede stopp, selvstendige etapper.', step3Title:'Timing og rutenotater', step3Lead:'Hold det lett. Dette skal føles som en concierge-forespørsel, ikke papirarbeid.', seasonLabel:'Ønsket sesong', regionLabel:'Regionidé', notesLabel:'Smaksnotater', step4Title:'Be om LINAS-forslag', step4Lead:'Kontaktinfo er bevisst åpen til LINAS bestemmer endelig kanal. Knappen bekrefter foreløpig bare front-end-flyten.', nameLabel:'Navn', contactLabel:'Kontakt', prevBtn:'Tilbake', nextBtn:'Fortsett', contactKicker:'LINAS ruteatelier', contactTitle:'Personlig, diskret, forberedt.', contactLead:'Endelig kontaktadresse kommer senere. Siden bør allerede signalisere standarden: hver forespørsel behandles som en rute som skal designes, ikke et sete som skal selges.', contactCta:'Start privat forespørsel', proof1Title:'Fokus', proof1Text:'Founder-historien kan leses i bildeteksten: hold fokus, gjør fortiden til læring.', proof2Title:'Lokal dømmekraft', proof2Text:'Luksus er å vite hvilken vei man skal ta, og hvilken man skal droppe.', proof3Title:'Pauser med hensikt', proof3Text:'Vann, mat, kultur eller utsikt — hvert stopp skal fortjene plassen sin.', proof4Title:'Gjestens rytme', proof4Text:'De beste rutene føles designet rundt personen som sykler dem.', footerText:'Eksklusive sykkelopplevelser · guidet og delvis guidet · Europa · konseptprototype', footerTop:'Til toppen', requestDone:'Prototype-forespørsel fanget. Endelig kontakt/sende-kanal trenger fortsatt LINAS-detaljer.'
+        brandTag:'Eksklusive sykkelopplevelser', navStory:'Historie', navDestinations:'Destinasjoner', navBooking:'Privat forespørsel', navContact:'Kontakt', heroStatus:'Nåværende kurateringsstatus: 3 private plasser igjen høsten 2026', heroKicker:'Private guidede og delvis guidede Europa-turer', heroTitle:'Forbi veien. Inn i stedet.', heroLead:'LINAS designer eksklusive sykkelopplevelser bygget på to tiår med lokalkunnskap: diskrete ruter, menneskelig rytme, skjulte utsiktspunkt og en bookingflyt som føles personlig fra første klikk.', heroCta:'Start privat forespørsel', heroCta2:'Se historien', stat1:'år med levd rutekunnskap', stat2:'privat reiserute om gangen', stat3:'rolige veier, vann, byer og stigninger', storyKicker:'Founder-fortelling', storyTitle:'Et luksusmerke bygget av ekte kilometer.', storyLead:'Bildene er ikke pynt. De er bevis på veiminne, tålmodighet og personlig standard. LINAS skal føles mindre som masseturisme og mer som å bli invitert inn i en rute bare en erfaren syklist ville valgt.', storyQuote:'Make your dream happen — men gjør veien verdig drømmen.', storyText:'Denne retningen rammer inn Linas som kurator: personen som vet når man skal sykle, hvor man skal stoppe, når en lokal vert skal inn, og når gjesten skal få være alene med landskapet.', storySig:'LINAS ruteatelier', destKicker:'Skjulte steder', destTitle:'Ikke turer. Private sykkelkapitler.', destLead:'Hvert kapittel kan bli en fullt guidet eller delvis guidet rute: by-til-vann, vei-til-utsiktspunkt, fjell-til-småby eller en roligere kulturdag med aktivitetsstopp underveis.', routeAtelierKicker:'Interaktivt ruteatelier', routeMapTitle:'Privat ruteskisse', routeActiveLabel:'Aktiv rute', routeElevationLabel:'Høydeprofil', routeHighlightsLabel:'Ruteintelligens', routeHoverHint:'Hold over eller trykk på et sykkelkapittel for å tegne det på det private kartet.', card1Title:'Den lange rolige veien', card1Text:'For syklister som vil ha rom, tempo og følelsen av å reise mellom steder — ikke bare besøke dem.', card2Title:'Vann, ferge, bad', card2Text:'Kyst- eller innsjøturer der pausen er like viktig som målet.', card3Title:'By til utflukt', card3Text:'Et raffinert første-dagsformat: start der gjesten er, og forlat de vanlige gatene.', card4Title:'Ruteintelligens', card4Text:'Riktig vei, sesong, vanskelighetsgrad og stoppsekvens — valgt før gjesten ankommer.', card5Title:'Utsikt med mening', card5Text:'Ikke et tilfeldig fotostopp, men øyeblikket hele ruten har pekt mot.', card6Title:'Private små grupper', card6Text:'Premiumturer bør forbli personlige: par, venner, founders, team eller solo-reisende.', card7Title:'Guidet der det teller', card7Text:'Fullt guidet når dømmekraft trengs. Delvis guidet når frihet gjør dagen bedre.', expKicker:'Opplevelsesarkitektur', expTitle:'High-end uten å bli stivt.', expLead:'Tilbudet skal føles premium fordi det er rolig, forberedt og personlig — ikke fordi det er fullt av luksusklisjeer.', exp1Title:'Kurert før ankomst', exp1Text:'Gjesten svarer på noen få presise spørsmål. LINAS svarer med et tilpasset rutekonsept, ikke en generisk pakke.', exp2Title:'Guidet eller delvis guidet', exp2Text:'Noen dager trenger guide hele veien. Andre blir bedre med guidet start, vertede stopp og elegante selvstendige etapper.', exp3Title:'Lokal tekstur', exp3Text:'Små steder, gode pauser, ekte utsikt, mat, vann, ferger, markeder og mennesker — lagt til bare når det tjener ruten.', bookKicker:'Sømløs privat forespørsel', bookTitle:'En bookingflyt som føles som concierge.', bookLead:'Dette er en front-end-prototype for fremtidig forespørsel. Målet er ikke rask checkout, men å samle nok smak, timing og sykkelkontekst til at LINAS kan svare med et premium forslag.', step1Title:'Hva slags dag skal det være?', step1Lead:'Velg stemningen først. Ruten kan designes rundt den.', mood1:'Scenisk vei', mood1Text:'Utsikt, avstand, rytme og rolige veier.', mood2:'Vann og kyst', mood2Text:'Innsjø, ferge, bad, havn eller kystlinje.', mood3:'Byflukt', mood3Text:'Start sentralt, avslutt et sted som huskes.', mood4:'Lokal kultur', mood4Text:'Mat, marked, lokal vert eller lite skjult stopp.', step2Title:'Hvor privat skal det føles?', step2Lead:'Premium-posisjonering starter med gruppestørrelse og rytme.', guestsLabel:'Gjester', paceLabel:'Tempo', pace1:'Rolig', pace2:'Balansert', pace3:'Ambisiøst', guide1:'Fullt guidet', guide1Text:'LINAS eller partner guider hele opplevelsen.', guide2:'Delvis guidet', guide2Text:'Guidet start, vertede stopp, selvstendige etapper.', step3Title:'Timing og rutenotater', step3Lead:'Hold det lett. Dette skal føles som en concierge-forespørsel, ikke papirarbeid.', seasonLabel:'Ønsket sesong', regionLabel:'Regionidé', notesLabel:'Smaksnotater', step4Title:'Be om LINAS-forslag', step4Lead:'Kontaktinfo er bevisst åpen til LINAS bestemmer endelig kanal. Knappen bekrefter foreløpig bare front-end-flyten.', nameLabel:'Navn', contactLabel:'Kontakt', prevBtn:'Tilbake', nextBtn:'Fortsett', contactKicker:'LINAS ruteatelier', contactTitle:'Personlig, diskret, forberedt.', contactLead:'Endelig kontaktadresse kommer senere. Siden bør allerede signalisere standarden: hver forespørsel behandles som en rute som skal designes, ikke et sete som skal selges.', contactCta:'Start privat forespørsel', proof1Title:'Fokus', proof1Text:'Founder-historien kan leses i bildeteksten: hold fokus, gjør fortiden til læring.', proof2Title:'Lokal dømmekraft', proof2Text:'Luksus er å vite hvilken vei man skal ta, og hvilken man skal droppe.', proof3Title:'Pauser med hensikt', proof3Text:'Vann, mat, kultur eller utsikt — hvert stopp skal fortjene plassen sin.', proof4Title:'Gjestens rytme', proof4Text:'De beste rutene føles designet rundt personen som sykler dem.', footerText:'Eksklusive sykkelopplevelser · guidet og delvis guidet · Europa · konseptprototype', footerTop:'Til toppen', requestDone:'Prototype-forespørsel fanget. Endelig kontakt/sende-kanal trenger fortsatt LINAS-detaljer.'
       },
       lt: {
-        brandTag:'Aukštos klasės dviračių patirtys', navStory:'Istorija', navDestinations:'Kryptys', navBooking:'Privati užklausa', navContact:'Kontaktai', heroStatus:'Dabartinė kuravimo būsena: liko 3 privatūs laikai 2026 m. rudeniui', heroKicker:'Privačios kelionės Europoje su gidu arba iš dalies su gidu', heroTitle:'Už kelio. Į vietos patirtį.', heroLead:'LINAS kuria aukštos klasės dviračių patirtis, paremtas dviem dešimtmečiais vietos žinių: diskretiški maršrutai, žmogaus ritmas, paslėpti vaizdai ir asmeniška užklausos eiga nuo pirmo paspaudimo.', heroCta:'Pradėti privačią užklausą', heroCta2:'Žiūrėti istoriją', stat1:'metų gyvų maršrutų žinių', stat2:'privatus maršrutas vienu metu', stat3:'ramūs keliai, vanduo, miestai ir kalvos', storyKicker:'Įkūrėjo pasakojimas', storyTitle:'Prabangos ženklas iš tikrų kilometrų.', storyLead:'Nuotraukos nėra dekoracija. Jos liudija kelių atmintį, kantrybę ir asmeninį standartą. LINAS turėtų jaustis ne kaip masinis turizmas, o kaip kvietimas į maršrutą, kurį pasirinktų tik patyręs dviratininkas.', storyQuote:'Make your dream happen — bet padaryk kelią vertą svajonės.', storyText:'Ši kryptis rodo Liną kaip kuratorių: žmogų, kuris žino, kada važiuoti, kur sustoti, kada įtraukti vietinį šeimininką ir kada palikti svečią vieną su kraštovaizdžiu.', storySig:'LINAS maršrutų ateljė', destKicker:'Paslėptų vietų kalba', destTitle:'Ne turai. Privatūs dviračių skyriai.', destLead:'Kiekvienas skyrius gali tapti pilnai vedamu arba iš dalies vedamu maršrutu: miestas-vanduo, kelias-vaizdas, kalnai-miestelis arba lėtesnė kultūrinė diena su veiklomis pakeliui.', card1Title:'Ilgas tylus kelias', card1Text:'Tiems, kurie nori erdvės, ritmo ir kelionės tarp vietų jausmo — ne tik jas aplankyti.', card2Title:'Vanduo, keltas, maudynės', card2Text:'Pakrantės ar ežerų maršrutai, kur pauzė tokia pat svarbi kaip tikslas.', card3Title:'Iš miesto į pabėgimą', card3Text:'Rafinuotas pirmos dienos formatas: pradėti ten, kur yra svečias, ir palikti įprastas gatves.', card4Title:'Maršruto išmanymas', card4Text:'Tinkamas kelias, sezonas, sunkumas ir sustojimų seka — parinkta prieš svečiui atvykstant.', card5Title:'Vaizdai su prasme', card5Text:'Ne atsitiktinis foto sustojimas, o momentas, į kurį vedė visas maršrutas.', card6Title:'Privačios mažos grupės', card6Text:'Premium kelionės turi išlikti asmeniškos: poros, draugai, kūrėjai, komandos ar solo keliautojai.', card7Title:'Gidas ten, kur svarbu', card7Text:'Pilnai su gidu, kai reikia sprendimų. Iš dalies su gidu, kai laisvė pagerina dieną.', expKicker:'Patirties architektūra', expTitle:'Aukšta klasė be sustingimo.', expLead:'Pasiūlymas turi jaustis premium, nes yra ramus, paruoštas ir asmeniškas — ne todėl, kad pilnas prabangos klišių.', exp1Title:'Paruošta prieš atvykimą', exp1Text:'Svečias atsako į kelis tikslius klausimus. LINAS pateikia pritaikytą maršruto konceptą, ne standartinį paketą.', exp2Title:'Su gidu arba iš dalies', exp2Text:'Kai kurioms dienoms reikia gido visą laiką. Kitoms geriau tinka pradžia su gidu, suplanuoti sustojimai ir savarankiškos atkarpos.', exp3Title:'Vietinė tekstūra', exp3Text:'Mažos vietos, geros pauzės, tikri vaizdai, maistas, vanduo, keltai, turgūs ir žmonės — tik kai tai tarnauja maršrutui.', bookKicker:'Sklandi privati užklausa', bookTitle:'Užklausos eiga kaip concierge.', bookLead:'Tai front-end prototipas būsimai užklausai. Tikslas nėra greitas pirkimas, o pakankamai skonio, laiko ir važiavimo konteksto, kad LINAS atsakytų premium pasiūlymu.', step1Title:'Kokia turėtų būti diena?', step1Lead:'Pirma pasirink nuotaiką. Maršrutą galima kurti aplink ją.', mood1:'Vaizdingas kelias', mood1Text:'Vaizdai, atstumas, ritmas ir ramūs keliai.', mood2:'Vanduo ir pakrantė', mood2Text:'Ežeras, keltas, maudynės, uostas ar pakrantė.', mood3:'Pabėgimas iš miesto', mood3Text:'Pradėti centre, baigti įsimintinoje vietoje.', mood4:'Vietinė kultūra', mood4Text:'Maistas, turgus, vietinis šeimininkas ar paslėptas sustojimas.', step2Title:'Kiek privatu turi jaustis?', step2Lead:'Premium pozicija prasideda nuo grupės dydžio ir ritmo.', guestsLabel:'Svečiai', paceLabel:'Tempas', pace1:'Ramus', pace2:'Subalansuotas', pace3:'Ambicingas', guide1:'Pilnai su gidu', guide1Text:'LINAS arba partneris lydi visą patirtį.', guide2:'Iš dalies su gidu', guide2Text:'Pradžia su gidu, suplanuoti sustojimai, savarankiškos atkarpos.', step3Title:'Laikas ir maršruto pastabos', step3Lead:'Lengvai. Tai turi jaustis kaip concierge užklausa, ne dokumentai.', seasonLabel:'Pageidaujamas sezonas', regionLabel:'Regiono idėja', notesLabel:'Skonio pastabos', step4Title:'Prašyti LINAS pasiūlymo', step4Lead:'Kontaktai palikti atviri, kol LINAS nuspręs galutinį kanalą. Šis mygtukas dabar tik patvirtina front-end eigą.', nameLabel:'Vardas', contactLabel:'Kontaktas', prevBtn:'Atgal', nextBtn:'Tęsti', contactKicker:'LINAS maršrutų ateljė', contactTitle:'Asmeniška, diskretiška, paruošta.', contactLead:'Galutinis kontaktinis adresas bus vėliau. Svetainė jau turi parodyti standartą: kiekviena užklausa yra kuriamas maršrutas, ne parduodama vieta.', contactCta:'Pradėti privačią užklausą', proof1Title:'Fokusas', proof1Text:'Įkūrėjo istoriją galima perskaityti nuotraukos tekste: išlik susitelkęs, paversk praeitį pamoka.', proof2Title:'Vietinis sprendimas', proof2Text:'Prabanga yra žinoti, kurį kelią rinktis, o kurio atsisakyti.', proof3Title:'Pauzės su tikslu', proof3Text:'Vanduo, maistas, kultūra ar vaizdas — kiekvienas sustojimas turi būti vertas vietos.', proof4Title:'Svečio ritmas', proof4Text:'Geriausi maršrutai jaučiasi sukurti aplink žmogų, kuris važiuoja.', footerText:'Aukštos klasės dviračių patirtys · su gidu ir iš dalies · Europa · koncepto prototipas', footerTop:'Į viršų', requestDone:'Prototipo užklausa užfiksuota. Galutiniam kontaktui/siuntimui dar reikia LINAS duomenų.'
+        brandTag:'Aukštos klasės dviračių patirtys', navStory:'Istorija', navDestinations:'Kryptys', navBooking:'Privati užklausa', navContact:'Kontaktai', heroStatus:'Dabartinė kuravimo būsena: liko 3 privatūs laikai 2026 m. rudeniui', heroKicker:'Privačios kelionės Europoje su gidu arba iš dalies su gidu', heroTitle:'Už kelio. Į vietos patirtį.', heroLead:'LINAS kuria aukštos klasės dviračių patirtis, paremtas dviem dešimtmečiais vietos žinių: diskretiški maršrutai, žmogaus ritmas, paslėpti vaizdai ir asmeniška užklausos eiga nuo pirmo paspaudimo.', heroCta:'Pradėti privačią užklausą', heroCta2:'Žiūrėti istoriją', stat1:'metų gyvų maršrutų žinių', stat2:'privatus maršrutas vienu metu', stat3:'ramūs keliai, vanduo, miestai ir kalvos', storyKicker:'Įkūrėjo pasakojimas', storyTitle:'Prabangos ženklas iš tikrų kilometrų.', storyLead:'Nuotraukos nėra dekoracija. Jos liudija kelių atmintį, kantrybę ir asmeninį standartą. LINAS turėtų jaustis ne kaip masinis turizmas, o kaip kvietimas į maršrutą, kurį pasirinktų tik patyręs dviratininkas.', storyQuote:'Make your dream happen — bet padaryk kelią vertą svajonės.', storyText:'Ši kryptis rodo Liną kaip kuratorių: žmogų, kuris žino, kada važiuoti, kur sustoti, kada įtraukti vietinį šeimininką ir kada palikti svečią vieną su kraštovaizdžiu.', storySig:'LINAS maršrutų ateljė', destKicker:'Paslėptų vietų kalba', destTitle:'Ne turai. Privatūs dviračių skyriai.', destLead:'Kiekvienas skyrius gali tapti pilnai vedamu arba iš dalies vedamu maršrutu: miestas-vanduo, kelias-vaizdas, kalnai-miestelis arba lėtesnė kultūrinė diena su veiklomis pakeliui.', routeAtelierKicker:'Interaktyvi maršrutų ateljė', routeMapTitle:'Privatus maršruto eskizas', routeActiveLabel:'Aktyvus maršrutas', routeElevationLabel:'Aukščio profilis', routeHighlightsLabel:'Maršruto įžvalgos', routeHoverHint:'Užvesk arba bakstelėk dviračių skyrių, kad jis būtų nupieštas privačiame žemėlapyje.', card1Title:'Ilgas tylus kelias', card1Text:'Tiems, kurie nori erdvės, ritmo ir kelionės tarp vietų jausmo — ne tik jas aplankyti.', card2Title:'Vanduo, keltas, maudynės', card2Text:'Pakrantės ar ežerų maršrutai, kur pauzė tokia pat svarbi kaip tikslas.', card3Title:'Iš miesto į pabėgimą', card3Text:'Rafinuotas pirmos dienos formatas: pradėti ten, kur yra svečias, ir palikti įprastas gatves.', card4Title:'Maršruto išmanymas', card4Text:'Tinkamas kelias, sezonas, sunkumas ir sustojimų seka — parinkta prieš svečiui atvykstant.', card5Title:'Vaizdai su prasme', card5Text:'Ne atsitiktinis foto sustojimas, o momentas, į kurį vedė visas maršrutas.', card6Title:'Privačios mažos grupės', card6Text:'Premium kelionės turi išlikti asmeniškos: poros, draugai, kūrėjai, komandos ar solo keliautojai.', card7Title:'Gidas ten, kur svarbu', card7Text:'Pilnai su gidu, kai reikia sprendimų. Iš dalies su gidu, kai laisvė pagerina dieną.', expKicker:'Patirties architektūra', expTitle:'Aukšta klasė be sustingimo.', expLead:'Pasiūlymas turi jaustis premium, nes yra ramus, paruoštas ir asmeniškas — ne todėl, kad pilnas prabangos klišių.', exp1Title:'Paruošta prieš atvykimą', exp1Text:'Svečias atsako į kelis tikslius klausimus. LINAS pateikia pritaikytą maršruto konceptą, ne standartinį paketą.', exp2Title:'Su gidu arba iš dalies', exp2Text:'Kai kurioms dienoms reikia gido visą laiką. Kitoms geriau tinka pradžia su gidu, suplanuoti sustojimai ir savarankiškos atkarpos.', exp3Title:'Vietinė tekstūra', exp3Text:'Mažos vietos, geros pauzės, tikri vaizdai, maistas, vanduo, keltai, turgūs ir žmonės — tik kai tai tarnauja maršrutui.', bookKicker:'Sklandi privati užklausa', bookTitle:'Užklausos eiga kaip concierge.', bookLead:'Tai front-end prototipas būsimai užklausai. Tikslas nėra greitas pirkimas, o pakankamai skonio, laiko ir važiavimo konteksto, kad LINAS atsakytų premium pasiūlymu.', step1Title:'Kokia turėtų būti diena?', step1Lead:'Pirma pasirink nuotaiką. Maršrutą galima kurti aplink ją.', mood1:'Vaizdingas kelias', mood1Text:'Vaizdai, atstumas, ritmas ir ramūs keliai.', mood2:'Vanduo ir pakrantė', mood2Text:'Ežeras, keltas, maudynės, uostas ar pakrantė.', mood3:'Pabėgimas iš miesto', mood3Text:'Pradėti centre, baigti įsimintinoje vietoje.', mood4:'Vietinė kultūra', mood4Text:'Maistas, turgus, vietinis šeimininkas ar paslėptas sustojimas.', step2Title:'Kiek privatu turi jaustis?', step2Lead:'Premium pozicija prasideda nuo grupės dydžio ir ritmo.', guestsLabel:'Svečiai', paceLabel:'Tempas', pace1:'Ramus', pace2:'Subalansuotas', pace3:'Ambicingas', guide1:'Pilnai su gidu', guide1Text:'LINAS arba partneris lydi visą patirtį.', guide2:'Iš dalies su gidu', guide2Text:'Pradžia su gidu, suplanuoti sustojimai, savarankiškos atkarpos.', step3Title:'Laikas ir maršruto pastabos', step3Lead:'Lengvai. Tai turi jaustis kaip concierge užklausa, ne dokumentai.', seasonLabel:'Pageidaujamas sezonas', regionLabel:'Regiono idėja', notesLabel:'Skonio pastabos', step4Title:'Prašyti LINAS pasiūlymo', step4Lead:'Kontaktai palikti atviri, kol LINAS nuspręs galutinį kanalą. Šis mygtukas dabar tik patvirtina front-end eigą.', nameLabel:'Vardas', contactLabel:'Kontaktas', prevBtn:'Atgal', nextBtn:'Tęsti', contactKicker:'LINAS maršrutų ateljė', contactTitle:'Asmeniška, diskretiška, paruošta.', contactLead:'Galutinis kontaktinis adresas bus vėliau. Svetainė jau turi parodyti standartą: kiekviena užklausa yra kuriamas maršrutas, ne parduodama vieta.', contactCta:'Pradėti privačią užklausą', proof1Title:'Fokusas', proof1Text:'Įkūrėjo istoriją galima perskaityti nuotraukos tekste: išlik susitelkęs, paversk praeitį pamoka.', proof2Title:'Vietinis sprendimas', proof2Text:'Prabanga yra žinoti, kurį kelią rinktis, o kurio atsisakyti.', proof3Title:'Pauzės su tikslu', proof3Text:'Vanduo, maistas, kultūra ar vaizdas — kiekvienas sustojimas turi būti vertas vietos.', proof4Title:'Svečio ritmas', proof4Text:'Geriausi maršrutai jaučiasi sukurti aplink žmogų, kuris važiuoja.', footerText:'Aukštos klasės dviračių patirtys · su gidu ir iš dalies · Europa · koncepto prototipas', footerTop:'Į viršų', requestDone:'Prototipo užklausa užfiksuota. Galutiniam kontaktui/siuntimui dar reikia LINAS duomenų.'
       }
     };
 
-    const state = { lang: 'en', step: 0, submitting: false };
+    const state = { lang: 'en', step: 0, submitting: false, activeRoute: 'quiet-road' };
     const form = document.getElementById('requestForm');
     const stepEls = Array.from(document.querySelectorAll('.step'));
     const dotEls = Array.from(document.querySelectorAll('.step-dot'));
@@ -1504,6 +1763,75 @@
       'Local culture': 'images/05-road-sign-bike.jpg'
     };
 
+    const routeAtelierCopy = {
+      en: {
+        'quiet-road': { code: 'LINAS / 01', title: 'The long quiet road', narrative: 'Drawing a quiet asphalt line with one hidden viewpoint and enough elevation to feel earned.', profile: [18, 24, 31, 39, 48, 54, 64, 59, 71, 83, 78, 62], highlights: ['Hidden viewpoint at km 42', 'Wind-protected café timing after the ridge', 'Optional final climb if the legs feel alive'] },
+        'water-ferry': { code: 'LINAS / 02', title: 'Water, ferry, swim', narrative: 'Sequencing water, ferry timing and a swim pause so the day feels slow without losing momentum.', profile: [12, 16, 18, 22, 19, 27, 24, 28, 21, 18, 15, 13], highlights: ['Ferry window held as the central timing anchor', 'Swim stop placed after the warmest road section', 'Local lunch only if it improves the rhythm'] },
+        'city-escape': { code: 'LINAS / 03', title: 'City to escape', narrative: 'A polished first-day format: start from the guest door, leave the city cleanly, then let the road open.', profile: [10, 14, 22, 28, 35, 46, 42, 36, 31, 27, 20, 16], highlights: ['Hotel-to-quiet-road transition mapped in advance', 'Urban stress removed from the first 20 minutes', 'Soft landing stop before the route turns private'] },
+        'viewpoint': { code: 'LINAS / 04', title: 'Viewpoints with meaning', narrative: 'A route where the high point is not a photo stop, but the reason the entire line was drawn.', profile: [16, 28, 39, 52, 66, 78, 88, 76, 64, 53, 42, 30], highlights: ['Hidden viewpoint at km 42 or equivalent local moment', 'Climb pacing calibrated before arrival', 'Descent and return kept elegant, not chaotic'] }
+      },
+      no: {
+        'quiet-road': { code: 'LINAS / 01', title: 'Den lange rolige veien', narrative: 'Tegner en rolig asfaltlinje med ett skjult utsiktspunkt og nok høyde til at dagen føles fortjent.', profile: [18, 24, 31, 39, 48, 54, 64, 59, 71, 83, 78, 62], highlights: ['Skjult utsiktspunkt ved km 42', 'Kafé-timing i le etter ryggen', 'Valgfri avsluttende stigning hvis beina vil mer'] },
+        'water-ferry': { code: 'LINAS / 02', title: 'Vann, ferge, bad', narrative: 'Setter vann, fergetiming og badestopp i riktig rekkefølge slik at dagen føles rolig uten å miste flyt.', profile: [12, 16, 18, 22, 19, 27, 24, 28, 21, 18, 15, 13], highlights: ['Fergevindu brukt som dagens tidsanker', 'Badestopp lagt etter den varmeste veistrekningen', 'Lokal lunsj bare hvis det løfter rytmen'] },
+        'city-escape': { code: 'LINAS / 03', title: 'By til utflukt', narrative: 'Et raffinert første-dagsformat: start ved gjestens dør, forlat byen rent, og la veien åpne seg.', profile: [10, 14, 22, 28, 35, 46, 42, 36, 31, 27, 20, 16], highlights: ['Overgangen fra hotell til rolig vei kartlagt på forhånd', 'Bystress fjernet fra de første 20 minuttene', 'Mykt landingsstopp før ruten blir privat'] },
+        'viewpoint': { code: 'LINAS / 04', title: 'Utsiktspunkt med mening', narrative: 'En rute der høydepunktet ikke er et tilfeldig fotostopp, men grunnen til at hele linjen ble tegnet.', profile: [16, 28, 39, 52, 66, 78, 88, 76, 64, 53, 42, 30], highlights: ['Skjult utsiktspunkt ved km 42 eller tilsvarende lokalt øyeblikk', 'Stigningstempo kalibrert før ankomst', 'Nedkjøring og retur holdes elegant, ikke kaotisk'] }
+      },
+      lt: {
+        'quiet-road': { code: 'LINAS / 01', title: 'Ilgas tylus kelias', narrative: 'Brėžiama rami asfalto linija su vienu paslėptu vaizdu ir pakankamai aukščio, kad diena būtų užtarnauta.', profile: [18, 24, 31, 39, 48, 54, 64, 59, 71, 83, 78, 62], highlights: ['Paslėptas vaizdas ties 42 km', 'Kavinės laikas po kalnagūbrio', 'Papildomas finišo pakilimas, jei kojos nori daugiau'] },
+        'water-ferry': { code: 'LINAS / 02', title: 'Vanduo, keltas, maudynės', narrative: 'Vanduo, keltas ir maudynių pauzė sudėliojami taip, kad diena būtų lėta, bet neprarastų ritmo.', profile: [12, 16, 18, 22, 19, 27, 24, 28, 21, 18, 15, 13], highlights: ['Keltas tampa pagrindiniu laiko inkaru', 'Maudynių pauzė po šilčiausios kelio atkarpos', 'Vietiniai pietūs tik jei pagerina ritmą'] },
+        'city-escape': { code: 'LINAS / 03', title: 'Iš miesto į pabėgimą', narrative: 'Rafinuotas pirmos dienos formatas: startas nuo svečio durų, švarus išvažiavimas iš miesto ir atsiveriantis kelias.', profile: [10, 14, 22, 28, 35, 46, 42, 36, 31, 27, 20, 16], highlights: ['Perėjimas iš viešbučio į ramų kelią suplanuotas iš anksto', 'Miesto stresas pašalintas iš pirmų 20 minučių', 'Švelnus sustojimas prieš maršrutui tampant privačiam'] },
+        'viewpoint': { code: 'LINAS / 04', title: 'Vaizdai su prasme', narrative: 'Maršrutas, kuriame aukščiausias taškas nėra atsitiktinė nuotrauka, o priežastis, kodėl visa linija nubrėžta.', profile: [16, 28, 39, 52, 66, 78, 88, 76, 64, 53, 42, 30], highlights: ['Paslėptas vaizdas ties 42 km arba lygiavertis vietinis momentas', 'Pakilimo tempas suderintas prieš atvykimą', 'Nusileidimas ir grįžimas laikomi elegantiški, ne chaotiški'] }
+      }
+    };
+
+    const routeButtons = Array.from(document.querySelectorAll('.route-choice'));
+    const routeLines = Array.from(document.querySelectorAll('[data-route-line]'));
+    const routePins = Array.from(document.querySelectorAll('[data-route-pin]'));
+    const routeElevationProfile = document.getElementById('routeElevationProfile');
+    const routeHighlights = document.getElementById('routeHighlights');
+
+    function updateRouteAtelier(routeId = state.activeRoute) {
+      if (!routeButtons.length) return;
+      state.activeRoute = routeId;
+      const copy = routeAtelierCopy[state.lang]?.[routeId] || routeAtelierCopy.en[routeId] || routeAtelierCopy.en['quiet-road'];
+      routeButtons.forEach((button) => {
+        const active = button.dataset.route === routeId;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+      routeLines.forEach((line) => {
+        const active = line.dataset.routeLine === routeId;
+        line.classList.toggle('is-active', active);
+        line.classList.toggle('is-ghost', !active);
+      });
+      routePins.forEach((pin) => pin.classList.toggle('is-active', pin.dataset.routePin === routeId));
+      setText('activeRouteCode', copy.code);
+      setText('atelierRouteTitle', copy.title);
+      setText('atelierRouteNarrative', copy.narrative);
+      if (routeElevationProfile) {
+        routeElevationProfile.replaceChildren(...copy.profile.map((height, index) => {
+          const bar = document.createElement('span');
+          bar.style.height = `${height}%`;
+          bar.style.animationDelay = `${index * 24}ms`;
+          return bar;
+        }));
+      }
+      if (routeHighlights) {
+        routeHighlights.replaceChildren(...copy.highlights.map((line) => {
+          const item = document.createElement('li');
+          item.textContent = line;
+          return item;
+        }));
+      }
+    }
+
+    routeButtons.forEach((button) => {
+      const activate = () => updateRouteAtelier(button.dataset.route);
+      button.addEventListener('pointerenter', activate);
+      button.addEventListener('focus', activate);
+      button.addEventListener('click', activate);
+    });
+
     function formValue(name, fallback = '') {
       const el = form.querySelector(`[name="${name}"]:checked`) || form.querySelector(`[name="${name}"]`);
       return el ? el.value.trim() : fallback;
@@ -1592,6 +1920,7 @@
       updatePlaceholders();
       updateStepper();
       updateProposalSummary();
+      updateRouteAtelier();
     }
 
     function updateStepper() {
@@ -1661,6 +1990,7 @@
     updatePlaceholders();
     updateStepper();
     updateProposalSummary();
+    updateRouteAtelier();
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
